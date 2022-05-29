@@ -1,4 +1,8 @@
-import { NextPlanOutlined, SkipPreviousOutlined } from "@mui/icons-material";
+import {
+  CancelOutlined,
+  NextPlanOutlined,
+  SkipPreviousOutlined,
+} from "@mui/icons-material";
 import { Button, Input } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
@@ -30,6 +34,13 @@ const ImageUpload = (props: Props) => {
       setIndexImage(indexImage + 1);
     }
   };
+
+  const removeImage = () => {
+    const filteredImages = imageUrls.filter((e, i) => i !== indexImage);
+    console.log(filteredImages);
+    setImageUrls(filteredImages);
+    setIndexImage(0);
+  };
   const prevImage = () => {
     if (indexImage - 1 <= 0) {
       setIndexImage(0);
@@ -55,8 +66,9 @@ const ImageUpload = (props: Props) => {
     <Box
       sx={{
         height: "80vh",
-        width: "80vw",
+        width: "50vw",
         backgroundColor: "black",
+        boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
       }}
     >
       {!imageUrls.length && (
@@ -72,18 +84,18 @@ const ImageUpload = (props: Props) => {
             sx={
               imageUrls.length > 0
                 ? {
-                    height: "30vh",
-                    width: "80vw",
-                    backgroundColor: "black",
+                    display: "none",
                   }
                 : {
-                    height: "80vh",
-                    width: "80vw",
-                    backgroundColor: "black",
+                    height: "50vh",
+                    width: "50vw",
+                    backgroundColor: "#ffffff",
+                    display: "flex",
+                    justifyContent: "center",
                   }
             }
           >
-            <label htmlFor="contained-button-file">
+            <label htmlFor="contained-button-file" className="imageEdit1">
               <img
                 src="https://res.cloudinary.com/sahith/image/upload/v1653629103/upload_ig05dk.png"
                 alt="upload"
@@ -109,27 +121,37 @@ const ImageUpload = (props: Props) => {
         </FileUploader>
       )}
       <Box>
-        <label htmlFor="contained-button">
-          <input
-            id="contained-button"
-            multiple
-            type="file"
-            style={{ display: "none" }}
-            onChange={onChangeImage}
-          />
-          <Button variant="contained" component="span">
-            Upload
-          </Button>
-        </label>
         {imageUrls.length && (
-          <div className="container-pop ">
+          <label htmlFor="contained-button">
+            <input
+              id="contained-button"
+              multiple
+              type="file"
+              style={{ display: "none" }}
+              onChange={onChangeImage}
+            />
+            <Button variant="contained" component="span">
+              Upload
+            </Button>
+          </label>
+        )}
+        {imageUrls.length && (
+          <div className="container-pop">
             {/* <img className="image-posted " src={photo.image[0].url} alt="mine" /> */}
-            <div className="commented-post1">
+            <div>
               <img
-                className="image-posted "
-                src={URL.createObjectURL(imageUrls[indexImage])}
+                className="imageEditUploaded"
+                src={(window.URL || window.webkitURL).createObjectURL(
+                  imageUrls[indexImage]
+                )}
                 alt="mine"
               />
+              {imageUrls.length > 1 && (
+                <CancelOutlined
+                  className="multiple-icon-back"
+                  onClick={removeImage}
+                />
+              )}
               {imageUrls.length > 1 && (
                 <SkipPreviousOutlined
                   className="multiple-icon1"

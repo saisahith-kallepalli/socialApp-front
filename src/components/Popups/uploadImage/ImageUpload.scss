@@ -1,5 +1,5 @@
 .Image-container-drag {
-  width: 80vw;
+  width: 50vw;
   height: 80vh;
 }
 .multiple-icon1 {
@@ -15,7 +15,7 @@
   border-radius: 3px;
   font-size: 30px;
   opacity: 0.6;
-  align-self: flex-end;
+  left: 96%;
   position: absolute;
   margin-top: 50%;
   top: auto;
@@ -23,14 +23,29 @@
 }
 .container-pop {
   display: flex;
-  width: 50vw;
-  height: 55vh;
+  width: 100%;
+  position: relative;
   flex-direction: row;
   margin: 0px;
 }
 .imageEdit {
   width: 100%;
   object-fit: contain;
+}
+.imageEditUploaded {
+  width: 100%;
+  object-fit: contain;
+  position: absolute;
+}
+.imageEdit1 {
+  margin-top: 30px;
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  // object-fit: contain;
 }
 .image-posted {
   width: 50%;
@@ -48,7 +63,15 @@
 }
 .commented-post1 {
   display: flex;
-  width: 50%;
+  width: 100vw;
   flex-direction: column;
   position: relative;
+}
+
+.multiple-icon-back {
+  font-size: 30px;
+  opacity: 0.6;
+  left: 96%;
+  position: absolute;
+  color: #8b1919;
 }
