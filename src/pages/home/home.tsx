@@ -13,6 +13,7 @@ export default function Home() {
   const token = "Bearer " + authToken;
   const [posts, setPosts] = useState<Array<any>>([]);
   const [like, setLike] = useState<boolean>(false);
+  const [posting, setPosting] = useState<boolean>(false);
 
   useEffect(() => {
     fetchPosts();
@@ -22,6 +23,8 @@ export default function Home() {
     console.log(data.results);
     setPosts(data.results);
   };
+
+  
   const setRenderLikes = () => {
     setLike((pre) => !pre);
   };

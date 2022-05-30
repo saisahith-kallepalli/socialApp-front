@@ -8,6 +8,15 @@ function getPosts(token: string) {
     return response;
   });
 }
+
+function newPost(token: string, data: any) {
+  return post(`${baseURL}/posts`, data, {
+    headers: { Authorization: `${token}` },
+  }).then((response: any) => {
+    console.log(response);
+    return response;
+  });
+}
 function likePost(id: string, token: string) {
   return post(`${baseURL}/posts/like/${id}`, {
     headers: { Authorization: `${token}` },
@@ -26,4 +35,5 @@ export const postService = {
   getPosts,
   likePost,
   disLikePost,
+  newPost,
 };

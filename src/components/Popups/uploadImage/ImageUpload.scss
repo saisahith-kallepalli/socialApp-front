@@ -1,25 +1,26 @@
 .Image-container-drag {
   width: 50vw;
-  height: 80vh;
 }
 .multiple-icon1 {
-  border-radius: 3px;
-  font-size: 30px;
+  border-radius: 50px;
+  background-color: #2b2a2aa2;
+  text-align: center;
   opacity: 0.6;
+  top: 50%;
   align-self: flex-start;
   position: absolute;
-  margin-top: 50%;
-  color: #ffffff;
+  margin-left: 10px;
+  color: #faf7f7f6;
 }
+
 .multiple-icon2 {
-  border-radius: 3px;
-  font-size: 30px;
+  background-color: #2b2a2aa2;
+  border-radius: 50px;
   opacity: 0.6;
-  left: 96%;
   position: absolute;
-  margin-top: 50%;
-  top: auto;
-  color: #ffffff;
+  left: 90%;
+  top: 50%;
+  color: #faf7f7f6;
 }
 .container-pop {
   display: flex;
@@ -29,17 +30,18 @@
   margin: 0px;
 }
 .imageEdit {
-  width: 100%;
+  width: 40%;
   object-fit: contain;
 }
 .imageEditUploaded {
   width: 100%;
-  object-fit: contain;
+  height: 400px;
+  object-fit: fill;
   position: absolute;
 }
 .imageEdit1 {
   margin-top: 30px;
-  width: 60%;
+  width: 40%;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -73,5 +75,5 @@
   opacity: 0.6;
   left: 96%;
   position: absolute;
-  color: #8b1919;
+  color: #070707a9;
 }

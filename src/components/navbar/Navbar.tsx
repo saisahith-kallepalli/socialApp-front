@@ -28,9 +28,6 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
   return (
     <AppBar position="static" sx={{ backgroundColor: "#ffffff" }}>
       <Toolbar variant="dense">
-        {/* 
-          <MenuIcon />
-         */}
         <IconButton
           edge="start"
           color="inherit"
