@@ -87,7 +87,7 @@ export const PostContainer = (props: Props) => {
     });
     setReplyFocus(false);
     setShowComments(true);
-    // setPostComment({ comment: "", focus: false });
+    setPostComment({ comment: "", focus: false });
     console.log(value);
     setDuplicate((prev) => prev + 1);
   };

@@ -63,6 +63,9 @@ const Comments = (props: Props) => {
                   profileImage={each.id.createdBy.image}
                   profileId={each.id.createdBy._id}
                   createdAt={each.id.createdAt}
+                  reply={each.reply}
+                  replyFocus={props.replyFocus}
+                  onClickReply={props.onClickReply}
                 />
               );
             })

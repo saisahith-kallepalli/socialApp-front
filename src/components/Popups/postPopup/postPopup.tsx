@@ -57,10 +57,12 @@ const PostPopup = (props: Props) => {
   const [duplicate, setDuplicate] = useState<number>(0);
   const [comments, setComments] = useState<Array<any>>([]);
   const [postComment, setPostComment] = useState({ comment: "", focus: false });
+  const [commentId, setCommentId] = useState<string>("");
   const [replyFocus, setReplyFocus] = useState<boolean>(false);
-  const onClickReply = () => {
+  const onClickReply = (id: string) => {
     commentRef.current.focus();
     setReplyFocus(true);
+    setCommentId(id);
   };
   const onClickShowComments = async () => {
     const comments = await commentService.getComments(postId, token);
@@ -73,6 +75,21 @@ const PostPopup = (props: Props) => {
     const value = await commentService.postComment(props.postId, token, {
       comment: postComment.comment,
     });
+    setShowComments(true);
+    setPostComment({ comment: "", focus: false });
+    console.log(value);
+    setDuplicate((prev) => prev + 1);
+  };
+  const onclickReplay = async () => {
+    const value = await commentService.replyComment(
+      props.postId,
+      commentId,
+      token,
+      {
+        comment: postComment.comment,
+      }
+    );
+    setReplyFocus(false);
     setShowComments(true);
     setPostComment({ comment: "", focus: false });
     console.log(value);
@@ -269,7 +286,7 @@ const PostPopup = (props: Props) => {
               endAdornment: (
                 <InputAdornment position="end">
                   {replyFocus ? (
-                    <Button>Reply</Button>
+                    <Button onClick={onclickReplay}>Reply</Button>
                   ) : (
                     <Button onClick={onclickComment}>comment</Button>
                   )}
