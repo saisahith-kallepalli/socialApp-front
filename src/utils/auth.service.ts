@@ -25,12 +25,12 @@ try {
 const currentUserSubject = new BehaviorSubject(
   currentUserFromStorage || undefined
 );
-const currentOrganizationSubject = new BehaviorSubject(
-  (currentUserFromStorage &&
-    currentUserFromStorage._org &&
-    currentUserFromStorage._org[0]) ||
-    undefined
-);
+// const currentOrganizationSubject = new BehaviorSubject(
+//   (currentUserFromStorage &&
+//     currentUserFromStorage._org &&
+//     currentUserFromStorage._org[0]) ||
+//     undefined
+// );
 
 /*
  * Export as a Type
@@ -59,10 +59,10 @@ export const authenticationService = {
   get currentUserValue() {
     return currentUserSubject.value;
   },
-  currentOrganization: currentOrganizationSubject.asObservable(),
-  get currentOrganizationValue() {
-    return currentOrganizationSubject.value;
-  },
+  // currentOrganization: currentOrganizationSubject.asObservable(),
+  // get currentOrganizationValue() {
+  //   return currentOrganizationSubject.value;
+  // },
 };
 
 // function locateToSignUp() {
@@ -143,7 +143,7 @@ function requestPasswordReset(payload: any) {
  */
 function unsubscribeAll() {
   currentUserSubject.unsubscribe();
-  currentOrganizationSubject.unsubscribe();
+  // currentOrganizationSubject.unsubscribe();
 }
 
 /*
@@ -251,7 +251,7 @@ function loadCurrentUser() {
   get(`/api/auth/self`).then((response: any) => {
     localStorage.setItem("currentUser", JSON.stringify(response));
     currentUserSubject.next(response);
-    currentOrganizationSubject.next(response._org[0]);
+    // currentOrganizationSubject.next(response._org[0]);
   });
 }
 
@@ -270,6 +270,5 @@ function handleLogin(response: any) {
 
   if (response.user && !response.user._pre) {
     history.push(paths.home);
-    window.location.reload();
   }
 }

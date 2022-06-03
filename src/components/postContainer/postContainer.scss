@@ -2,10 +2,106 @@
   padding-left: 10px;
   padding-top: 10px;
 }
-.imageEdit {
+.container-pop {
+  display: flex;
   width: 100%;
-  object-fit: contain;
+  position: relative;
+  flex-direction: row;
+  margin: 0px;
+}
+.imageShow {
+  width: 608px;
+  height: 608px;
+  object-fit: fill;
+  position: relative;
+  padding-top: 13px;
+}
+.imageEdit2 {
+  width: 608px;
+  height: 608px;
+  object-fit: fill;
+  position: relative;
+  margin-top: 0px;
+}
+
+.next-icon {
+  bottom: 50%;
+  left: 85%;
+  position: fixed;
+}
+.prev-icon {
+  bottom: 50%;
+  position: fixed;
 }
 .container {
+  width: 608px;
+  border-radius: 8px;
+  padding: 8px, 0px, 0px, 0px;
+
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-top: 10px;
 }
+.caption {
+  font-family: var(--font-family-system);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  padding-left: 10px;
+}
+.userNameCaption {
+  font-family: var(--font-family-system);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+}
+.avatar-image {
+  border: 2px solid transparent;
+  background-image: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #6902be 75%,
+    #bc1888 100%
+  );
+  border-radius: 50px;
+}
+.moment-edit {
+  padding-left: 10px;
+  font-family: var(--font-family-system);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  color: #637381;
+}
+.viewAll-comments {
+  font-family: var(--font-family-system);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  cursor: pointer;
+  padding-left: 10px;
+  color: #919eab;
+}
+
+// .avatar-image::before {
+//   content: "";
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   width: calc(100%+15px);
+//   height: calc(100%+15px);
+//   background-image: linear-gradient(
+//     45deg,
+//     #f09433 0%,
+//     #e6683c 25%,
+//     #dc2743 50%,
+//     #6902be 75%,
+//     #bc1888 100%
+//   );
+//   border-radius: inherit;
+//   z-index: -1;
+// }

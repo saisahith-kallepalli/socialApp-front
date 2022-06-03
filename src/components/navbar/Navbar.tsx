@@ -5,11 +5,24 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 // import MenuIcon from "@mui/icons-material/Menu";
-import { AddBoxOutlined, Logout } from "@mui/icons-material";
+import {
+  AddAPhotoOutlined,
+  AddBoxOutlined,
+  BookmarkBorder,
+  BookmarkOutlined,
+  Home,
+  Label,
+  LockReset,
+  Logout,
+  ManageAccounts,
+} from "@mui/icons-material";
 import Tooltip from "@mui/material/Tooltip";
-import { Button, Popper } from "@mui/material";
+import { Avatar, Button, Fade, Popper } from "@mui/material";
 import ImageUpload from "../Popups/uploadImage/ImageUpload";
 import Popup from "reactjs-popup";
+import { Box } from "@mui/system";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export type NavbarProps = {
   /**
@@ -20,14 +33,37 @@ export type NavbarProps = {
 
 export const Navbar = ({ onLogout }: NavbarProps) => {
   const [close, setClose] = React.useState<boolean>(false);
+  const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setClose((prev) => !prev);
+  const onClickProfile = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((previousOpen) => !previousOpen);
   };
 
+  const canBeOpen = open && Boolean(anchorEl);
+  const profilePopperID = canBeOpen ? "spring-popper" : undefined;
+
+  const imagePopper = (event: React.MouseEvent<HTMLElement>) => {
+    setClose((prev) => !prev);
+  };
+  const user = useSelector((state: any) => state.userData.user);
+  console.log(user.name);
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#ffffff" }}>
-      <Toolbar variant="dense">
+    <AppBar
+      sx={{
+        position: "fixed",
+        width: "100vw",
+        display: "flex",
+        backgroundColor: "#ffffff",
+        top: 0,
+        zIndex: 99,
+      }}
+    >
+      <Toolbar
+        variant="dense"
+        sx={{ display: "flex", justifyContent: "space-between" }}
+      >
         <IconButton
           edge="start"
           color="inherit"
@@ -48,27 +84,111 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
             Social Feed
           </Typography>
         </IconButton>
-
-        <Popup
-          trigger={
-            <IconButton aria-describedby={"me"} onClick={handleClick}>
-              <AddBoxOutlined />
-            </IconButton>
-          }
-          modal
-          nested
-        >
-          <ImageUpload />
-        </Popup>
-        <Tooltip title="Logout">
-          <Button
-            variant="text"
-            style={{ color: "#000000", marginLeft: "auto" }}
-            onClick={onLogout}
+        <Box>
+          <Link to="/home">
+            <Tooltip title="home">
+              <IconButton sx={{ color: "#000000", marginLeft: "auto" }}>
+                <Home />
+              </IconButton>
+            </Tooltip>
+          </Link>
+          <Popup
+            trigger={
+              <Tooltip title="new post" onClick={imagePopper}>
+                <IconButton
+                  sx={{ color: "#000000", marginLeft: "auto" }}
+                  aria-describedby={"me"}
+                >
+                  <AddAPhotoOutlined />
+                </IconButton>
+              </Tooltip>
+            }
+            modal
+            nested
           >
-            <Logout />
-          </Button>
-        </Tooltip>
+            <ImageUpload />
+          </Popup>
+
+          <Link to="/home">
+            <Tooltip title="saved">
+              <IconButton sx={{ color: "#000000", marginLeft: "auto" }}>
+                <BookmarkBorder />
+              </IconButton>
+            </Tooltip>
+          </Link>
+          <IconButton onClick={onClickProfile}>
+            <Avatar alt={user.name} src={user.image || "https://sajsd.com"} />
+            <label className="userNameNav">{user.name}</label>
+          </IconButton>
+          {/* <Box sx={{ border: "2px solid #ffffff", borderRadius: "50px" }}>
+            
+            <label className="userName">{user.name}</label>
+          </Box> */}
+          {/* <Tooltip title="Logout">
+            <Button
+              variant="text"
+              style={{ color: "#000000", marginLeft: "auto" }}
+              onClick={onLogout}
+            >
+              <Logout />
+            </Button>
+          </Tooltip> */}
+          <Popper
+            placement="bottom-end"
+            disablePortal={true}
+            id={profilePopperID}
+            open={open}
+            anchorEl={anchorEl}
+            transition
+            modifiers={[
+              {
+                name: "flip",
+                enabled: true,
+                options: {
+                  altBoundary: true,
+                  rootBoundary: "document",
+                  padding: 8,
+                },
+              },
+              {
+                name: "preventOverflow",
+                enabled: true,
+                options: {
+                  altAxis: true,
+                  altBoundary: true,
+                  tether: true,
+                  rootBoundary: "viewport",
+                  padding: 8,
+                },
+              },
+            ]}
+          >
+            {({ TransitionProps }) => (
+              <Fade {...TransitionProps}>
+                <Box className="profilePopper">
+                  <Button>
+                    <IconButton>
+                      <ManageAccounts />
+                      <label className="popupNames">profile</label>
+                    </IconButton>
+                  </Button>
+                  <Button>
+                    <IconButton>
+                      <LockReset />
+                      <label className="popupNames">change password</label>
+                    </IconButton>
+                  </Button>
+                  <Button>
+                    <IconButton onClick={onLogout}>
+                      <Logout />
+                      <label className="popupNames">logout</label>
+                    </IconButton>
+                  </Button>
+                </Box>
+              </Fade>
+            )}
+          </Popper>
+        </Box>
       </Toolbar>
     </AppBar>
   );

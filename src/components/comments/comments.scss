@@ -1,0 +1,40 @@
+.comment_userName {
+  font-family: var(--font-family-system);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.9vw;
+  line-height: 22px;
+  margin-bottom: 0px;
+  color: #212b36;
+}
+.comment {
+  font-family: var(--font-family-system);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.98vw;
+  line-height: 22px;
+  padding-left: 10px;
+  color: #919eab;
+  margin-bottom: 0px;
+}
+.comment_moment {
+  font-family: var(--font-family-system);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  padding-top: 5px;
+  padding-left: 0px;
+  color: #919eab;
+}
+.reply-text {
+  font-family: var(--font-family-system);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 18px;
+  padding-left: 10px;
+  text-transform: capitalize;
+  cursor: pointer;
+  color: #919eab;
+}

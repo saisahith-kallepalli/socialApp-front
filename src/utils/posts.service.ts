@@ -4,7 +4,6 @@ function getPosts(token: string) {
   return get(`${baseURL}/posts`, {
     headers: { Authorization: `${token}` },
   }).then((response: any) => {
-    console.log(response);
     return response;
   });
 }
@@ -13,7 +12,6 @@ function newPost(token: string, data: any) {
   return post(`${baseURL}/posts`, data, {
     headers: { Authorization: `${token}` },
   }).then((response: any) => {
-    console.log(response);
     return response;
   });
 }

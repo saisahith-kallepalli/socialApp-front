@@ -7,33 +7,41 @@ import { PostContainer } from "../../components/postContainer";
 import Cookies from "js-cookie";
 import { postService } from "../../utils/posts.service";
 import { post } from "../../utils/http/httpMethods";
+import { postsData } from "../../redux/reducers";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Home() {
   const authToken = Cookies.get("_token");
+  const dispatch = useDispatch();
   const token = "Bearer " + authToken;
-  const [posts, setPosts] = useState<Array<any>>([]);
+  // const [posts, setPosts] = useState<Array<any>>([]);
   const [like, setLike] = useState<boolean>(false);
   const [posting, setPosting] = useState<boolean>(false);
-
+  const posts = useSelector((state: any) => state.postsData.posts.results);
+  const newPost = useSelector((state: any) => state.postsData.newPost);
+  // console.log(postsDataGet.posts.results);
   useEffect(() => {
     fetchPosts();
-  }, [like]);
+  }, [like, newPost]);
+  useEffect(() => {
+    window.scroll({
+      top: 0,
+      left: 100,
+      behavior: "smooth",
+    });
+  }, [newPost]);
   const fetchPosts = async () => {
     const data = await postService.getPosts(token);
-    console.log(data.results);
-    setPosts(data.results);
+    dispatch(postsData(data));
+    // setPosts(data.results);
   };
 
-  
   const setRenderLikes = () => {
     setLike((pre) => !pre);
   };
   return (
-    <Container maxWidth="sm">
+    <Container sx={{ marginTop: "80px" }}>
       <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Home
-        </Typography>
         {posts?.map((each: any) => {
           return (
             <PostContainer
@@ -45,6 +53,7 @@ export default function Home() {
               postCaption={each.caption}
               profileId={each.createdBy._id}
               postLikes={each.likes}
+              createdAt={each.createdAt}
               setRenderLikes={setRenderLikes}
             />
           );

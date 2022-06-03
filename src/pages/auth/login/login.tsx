@@ -17,12 +17,14 @@ import { authenticationService } from "../../../utils/auth.service";
 import { showErrorToast } from "../../../utils/toastUtil";
 import { paths } from "../../../routes/routes.config";
 import { Link } from "react-router-dom";
+import { userDataChange } from "../../../redux/reducers";
+import { useDispatch } from "react-redux";
 
 export default function Login() {
   // Initial hooks
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   const { handleSubmit, register } = useForm();
-
+  const dispatch = useDispatch();
   const [data, setData] = useState({
     showPassword: false,
   });
@@ -36,22 +38,17 @@ export default function Login() {
   /*
    * Verify Credentials
    */
-  const doLogin = (formData: any) => {
+  const doLogin = async (formData: any) => {
     const emailVerify = authenticationService.emailVerification(formData.email);
     const passwordVerify = authenticationService.passwordVerification(
       formData.password
     );
-    console.log("formData");
+    console.info("formData");
     setButtonDisabled(true);
     if (emailVerify && passwordVerify) {
-      authenticationService
-        .verifyCredentials(formData)
-        .then((response: any) => {
-          setButtonDisabled(false);
-        })
-        .catch((error) => {
-          setButtonDisabled(false);
-        });
+      const userData = await authenticationService.verifyCredentials(formData);
+      dispatch(userDataChange(userData));
+      setButtonDisabled(false);
     } else {
       showErrorToast("give valid credentials");
       setButtonDisabled(false);
