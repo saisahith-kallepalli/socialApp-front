@@ -1,4 +1,5 @@
 import React from "react";
+import history from "../../routes/history";
 import "./Navbar.scss";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -21,8 +22,9 @@ import { Avatar, Button, Fade, Popper } from "@mui/material";
 import ImageUpload from "../Popups/uploadImage/ImageUpload";
 import Popup from "reactjs-popup";
 import { Box } from "@mui/system";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { authenticationService } from "../../utils/auth.service";
 
 export type NavbarProps = {
   /**
@@ -35,7 +37,6 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
   const [close, setClose] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
   const onClickProfile = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
     setOpen((previousOpen) => !previousOpen);
@@ -47,8 +48,7 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
   const imagePopper = (event: React.MouseEvent<HTMLElement>) => {
     setClose((prev) => !prev);
   };
-  const user = useSelector((state: any) => state.userData.user);
-  console.log(user.name);
+  const user = useSelector((state: any) => state.userData.user)
   return (
     <AppBar
       sx={{
@@ -85,13 +85,14 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
           </Typography>
         </IconButton>
         <Box>
-          <Link to="/home">
-            <Tooltip title="home">
-              <IconButton sx={{ color: "#000000", marginLeft: "auto" }}>
-                <Home />
-              </IconButton>
-            </Tooltip>
-          </Link>
+          <Tooltip
+            title="home"
+            onClick={authenticationService.redirectToHomePage}
+          >
+            <IconButton sx={{ color: "#000000", marginLeft: "auto" }}>
+              <Home />
+            </IconButton>
+          </Tooltip>
           <Popup
             trigger={
               <Tooltip title="new post" onClick={imagePopper}>
@@ -109,13 +110,14 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
             <ImageUpload />
           </Popup>
 
-          <Link to="/home">
-            <Tooltip title="saved">
-              <IconButton sx={{ color: "#000000", marginLeft: "auto" }}>
-                <BookmarkBorder />
-              </IconButton>
-            </Tooltip>
-          </Link>
+          <Tooltip
+            title="saved"
+            onClick={authenticationService.redirectToSavedPage}
+          >
+            <IconButton sx={{ color: "#000000", marginLeft: "auto" }}>
+              <BookmarkBorder />
+            </IconButton>
+          </Tooltip>
           <IconButton onClick={onClickProfile}>
             <Avatar alt={user.name} src={user.image || "https://sajsd.com"} />
             <label className="userNameNav">{user.name}</label>

@@ -22,6 +22,7 @@ export const fetchPosts = createSlice({
   name: "getPosts",
   initialState: {
     posts: {},
+    saved: [],
     newPost: false,
   },
   reducers: {
@@ -31,10 +32,13 @@ export const fetchPosts = createSlice({
     isNewPost: (state, action) => {
       state.newPost = !state.newPost;
     },
+    savedPosts: (state, action) => {
+      state.saved = action.payload;
+    },
     // incrementByAmount: (state, action) => {
     //   state.value += action.payload;
     // },
   },
 });
 export const { userDataChange } = userDataSlice.actions;
-export const { postsData, isNewPost } = fetchPosts.actions;
+export const { postsData, isNewPost,savedPosts } = fetchPosts.actions;

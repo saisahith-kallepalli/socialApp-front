@@ -1,6 +1,8 @@
 import {
   ArrowBackIos,
   ArrowForwardIos,
+  Bookmark,
+  BookmarkBorderOutlined,
   BookmarkBorderSharp,
   ChatBubbleOutlineOutlined,
   FavoriteRounded,
@@ -20,6 +22,7 @@ import { Modal } from "react-bootstrap";
 import Moment from "react-moment";
 import { useSelector } from "react-redux";
 import { commentService } from "../../../utils/comments.service";
+import { postService } from "../../../utils/posts.service";
 import Comments from "../../comments/Comments";
 import "./postPopup.scss";
 type Props = {
@@ -34,6 +37,8 @@ type Props = {
   postCaption: string;
   createdAt: any;
   postId: string;
+  postLikes: any;
+  setRenderLikes: any;
 };
 
 const PostPopup = (props: Props) => {
@@ -59,40 +64,49 @@ const PostPopup = (props: Props) => {
   const [postComment, setPostComment] = useState({ comment: "", focus: false });
   const [commentId, setCommentId] = useState<string>("");
   const [replyFocus, setReplyFocus] = useState<boolean>(false);
+  const saved = useSelector((state: any) => state.userData.user.saved);
+  const isSaved: number = saved.filter(
+    (each: any) => each.id._id === props.postId
+  ).length;
+  const onClickHandleSave = async () => {
+    if (isSaved) {
+      await postService.unSavePost(props.postId);
+      props.setRenderLikes();
+    } else {
+      await postService.savePost(props.postId);
+      props.setRenderLikes();
+    }
+  };
   const onClickReply = (id: string) => {
     commentRef.current.focus();
     setReplyFocus(true);
     setCommentId(id);
   };
   const onClickShowComments = async () => {
-    const comments = await commentService.getComments(postId, token);
+    const comments = await commentService.getComments(postId);
     setComments(comments.comments);
   };
   useEffect(() => {
     onClickShowComments();
-  }, [duplicate]);
+  }, [duplicate, popup]);
+  const renderDuplicate = () => {
+    setDuplicate((prev) => prev + 1);
+  };
   const onclickComment = async () => {
-    const value = await commentService.postComment(props.postId, token, {
+    const value = await commentService.postComment(props.postId, {
       comment: postComment.comment,
     });
     setShowComments(true);
     setPostComment({ comment: "", focus: false });
-    console.log(value);
     setDuplicate((prev) => prev + 1);
   };
   const onclickReplay = async () => {
-    const value = await commentService.replyComment(
-      props.postId,
-      commentId,
-      token,
-      {
-        comment: postComment.comment,
-      }
-    );
+    const value = await commentService.replyComment(props.postId, commentId, {
+      comment: postComment.comment,
+    });
     setReplyFocus(false);
     setShowComments(true);
     setPostComment({ comment: "", focus: false });
-    console.log(value);
     setDuplicate((prev) => prev + 1);
   };
   const nextImagePopup = () => {
@@ -112,14 +126,14 @@ const PostPopup = (props: Props) => {
   };
   return (
     <Modal
-      size="lg"
+      size="xl"
       show={popup}
       onHide={() => setPopup(false)}
       className="body-dec overflow-hidden "
       animation={false}
     >
       <Modal.Body className="d-flex p-0 justify-content-start body-dec bg-white">
-        <Modal.Body className="p-0 body-dec bg-white">
+        <Box className="p-0 body-dec bg-white">
           <div className="imageShowPopup">
             <img
               className="imageEditPopup "
@@ -156,8 +170,8 @@ const PostPopup = (props: Props) => {
               ""
             )}
           </div>
-        </Modal.Body>
-        <Modal.Body className="body-dec hideOver">
+        </Box>
+        <Box className="body-dec hideOver">
           <Box
             sx={{
               // position: "fixed",
@@ -197,6 +211,7 @@ const PostPopup = (props: Props) => {
                 display: "flex",
                 justifyContent: "space-between",
                 mt: "20px",
+                width: "100%",
               }}
             >
               <Box>
@@ -207,18 +222,28 @@ const PostPopup = (props: Props) => {
                     }}
                   />
                 </IconButton>
+                {props.postLikes.length ? (
+                  <p className="likes-text">
+                    {props.postLikes.length}
+                    {props.postLikes.length > 1 ? " likes" : " like"}
+                  </p>
+                ) : (
+                  ""
+                )}
               </Box>
-              <IconButton
-                aria-label="comments"
-                onClick={() => {
-                  setReplyFocus(false);
-                }}
-              >
-                <ChatBubbleOutlineOutlined />
-              </IconButton>
               <Box>
-                <IconButton aria-label="save">
-                  <BookmarkBorderSharp />
+                <IconButton
+                  aria-label="comments"
+                  onClick={() => {
+                    setReplyFocus(false);
+                  }}
+                >
+                  <ChatBubbleOutlineOutlined />
+                </IconButton>
+              </Box>
+              <Box>
+                <IconButton aria-label="save" onClick={onClickHandleSave}>
+                  {isSaved ? <Bookmark /> : <BookmarkBorderOutlined />}
                 </IconButton>
               </Box>
             </Box>
@@ -244,6 +269,8 @@ const PostPopup = (props: Props) => {
                 ? comments.map((each) => {
                     return (
                       <Comments
+                        eachCommentId={each._id}
+                        commentLikes={each.likes}
                         key={each._id}
                         commentId={each._id}
                         comment={each.comment}
@@ -254,6 +281,7 @@ const PostPopup = (props: Props) => {
                         reply={each.reply}
                         replyFocus={replyFocus}
                         onClickReply={onClickReply}
+                        renderDuplicate={renderDuplicate}
                       />
                     );
                   })
@@ -294,7 +322,7 @@ const PostPopup = (props: Props) => {
               ),
             }}
           />
-        </Modal.Body>
+        </Box>
       </Modal.Body>
     </Modal>
   );

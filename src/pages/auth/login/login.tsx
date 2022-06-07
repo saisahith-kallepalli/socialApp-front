@@ -43,16 +43,20 @@ export default function Login() {
     const passwordVerify = authenticationService.passwordVerification(
       formData.password
     );
-    console.info("formData");
     setButtonDisabled(true);
     if (emailVerify && passwordVerify) {
       const userData = await authenticationService.verifyCredentials(formData);
-      dispatch(userDataChange(userData));
+      await dispatch(userDataChange(userData));
+      await fetchUser(userData.token);
       setButtonDisabled(false);
     } else {
       showErrorToast("give valid credentials");
       setButtonDisabled(false);
     }
+  };
+  const fetchUser = async (token: string) => {
+    const userDetails = await authenticationService.loadCurrentUser(token);
+    dispatch(userDataChange(userDetails));
   };
   /*
    * Render

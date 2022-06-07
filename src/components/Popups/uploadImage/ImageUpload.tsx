@@ -5,6 +5,7 @@ import {
   EmojiEmotions,
 } from "@mui/icons-material";
 import Picker from "emoji-picker-react";
+
 import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import { Box, flexbox } from "@mui/system";
 import React, { useEffect, useState } from "react";
@@ -27,7 +28,7 @@ const ImageUpload = (props: Props) => {
   const authToken = Cookies.get("_token");
   const token = "Bearer " + authToken;
   const [imageUrls, setImageUrls] = useState<Array<any>>([]);
-  const [indexImage, setIndexImage] = useState<Number>(0);
+  const [indexImage, setIndexImage] = useState<number>(0);
   const [caption, setCaption] = useState<string>("");
   const [showEmojis, setShowEmojis] = useState<Boolean>(false);
   const [uploading, setUploading] = useState<string>("not_uploaded");
@@ -39,7 +40,6 @@ const ImageUpload = (props: Props) => {
     const mainRoot: any = document.getElementById("uploader");
 
     mainRoot.addEventListener("click", (e: any) => {
-      console.log(e.target);
       if (
         e.target.className.includes("emoji") ||
         e.target.className.includes("icn")
@@ -56,7 +56,7 @@ const ImageUpload = (props: Props) => {
     const data = new FormData();
     imageUrls.map((each: any) => data.append("image", each));
     data.append("caption", caption);
-    await postService.newPost(token, data);
+    await postService.newPost(data);
     setUploading(uploader.uploaded);
     dispatch(isNewPost());
     setImageUrls([]);
@@ -76,7 +76,6 @@ const ImageUpload = (props: Props) => {
     if (keysOfImages) {
       keysOfImages.map((each: any | null) => {
         imageObjects.push(event[each]);
-        // console.log(URL.createObjectURL(e.target.files[0]));
       });
     }
     setImageUrls((prev) => [...prev, ...imageObjects]);
@@ -91,7 +90,6 @@ const ImageUpload = (props: Props) => {
 
   const removeImage = () => {
     const filteredImages = imageUrls.filter((e, i) => i !== indexImage);
-    console.log(filteredImages);
     setImageUrls(filteredImages);
     setIndexImage(0);
   };
@@ -104,18 +102,15 @@ const ImageUpload = (props: Props) => {
   };
   const onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
-    console.log(e.isPropagationStopped());
     const keysOfImages = Object.keys(e.target.files);
     const imageObjects: Array<any> = [];
     if (keysOfImages) {
       keysOfImages.map((each: any | null) => {
         imageObjects.push(e.target.files[each]);
-        // console.log(URL.createObjectURL(e.target.files[0]));
       });
     }
     setImageUrls((prev) => [...prev, ...imageObjects]);
   };
-  console.log(uploading, uploader.notUploaded);
   return (
     <Box id="uploader">
       {uploading === uploader.notUploaded ? (

@@ -16,7 +16,9 @@ import {
   AccountCircle,
   ArrowBackIos,
   ArrowForwardIos,
+  Bookmark,
   BookmarkAddOutlined,
+  BookmarkBorderOutlined,
   BookmarkBorderSharp,
   ChatBubbleOutlineOutlined,
   FavoriteBorderOutlined,
@@ -30,6 +32,7 @@ import { commentService } from "../../utils/comments.service";
 import Moment from "react-moment";
 import { FormControl, Modal } from "react-bootstrap";
 import PostPopup from "../Popups/postPopup/postPopup";
+import { useSelector } from "react-redux";
 type Props = {
   userName: string;
   profileImage: string;
@@ -44,8 +47,6 @@ type Props = {
 
 export const PostContainer = (props: Props) => {
   const commentRef: any = useRef();
-  const authToken = Cookies.get("_token");
-  const token = "Bearer " + authToken;
   const [showComments, setShowComments] = useState<boolean>(false);
   const [popup, setPopup] = useState<boolean>(false);
   const [comments, setComments] = useState<Array<any>>([]);
@@ -63,14 +64,16 @@ export const PostContainer = (props: Props) => {
     setReplyFocus(true);
     setCommentId(id);
   };
+  const saved = useSelector((state: any) => state.userData.user.saved);
   const isLiked: number = props.postLikes.filter(
     (each) => each.id === userData?._id
   ).length;
+  const isSaved: number = saved.filter(
+    (each: any) => each.id._id === props.postId
+  ).length;
   const onClickShowComments = async () => {
-    const comments = await commentService.getComments(props.postId, token);
+    const comments = await commentService.getComments(props.postId);
     setComments(comments.comments);
-
-    console.log(userData);
   };
   useEffect(() => {
     const userData: any = JSON.parse(
@@ -80,41 +83,44 @@ export const PostContainer = (props: Props) => {
   }, []);
   useEffect(() => {
     onClickShowComments();
-  }, [duplicate]);
+  }, [duplicate, popup]);
+  const renderDuplicate = () => {
+    setDuplicate((prev) => prev + 1);
+  };
   const onclickComment = async () => {
-    const value = await commentService.postComment(props.postId, token, {
+    const value = await commentService.postComment(props.postId, {
       comment: postComment.comment,
     });
     setReplyFocus(false);
     setShowComments(true);
-    setPostComment({ comment: "", focus: false });
-    console.log(value);
+    setPostComment({ comment: "" });
     setDuplicate((prev) => prev + 1);
   };
   const onclickReplay = async () => {
-    const value = await commentService.replyComment(
-      props.postId,
-      commentId,
-      token,
-      {
-        comment: postComment.comment,
-      }
-    );
+    const value = await commentService.replyComment(props.postId, commentId, {
+      comment: postComment.comment,
+    });
     setReplyFocus(false);
     setShowComments(true);
-    // setPostComment({ comment: "", focus: false });
-    console.log(value);
+    setPostComment({ comment: "" });
     setDuplicate((prev) => prev + 1);
   };
   const onClickHandleLike = async () => {
     if (isLiked) {
-      await postService.disLikePost(props.postId, token);
+      await postService.disLikePost(props.postId);
       props.setRenderLikes();
-      console.log("first");
     } else {
-      await postService.likePost(props.postId, token);
+      await postService.likePost(props.postId);
       props.setRenderLikes();
-      console.log("second");
+    }
+  };
+  const onClickHandleSave = async () => {
+    if (isSaved) {
+      await postService.unSavePost(props.postId);
+      props.setRenderLikes();
+    } else {
+      await postService.savePost(props.postId);
+      props.setRenderLikes();
     }
   };
   const nextImage = () => {
@@ -142,15 +148,11 @@ export const PostContainer = (props: Props) => {
           pb: "0px",
         }}
       >
-        <Box sx={{ display: "flex" }}>
-          <Box className="avatar-image">
-            <Box sx={{ border: "2px solid #ffffff", borderRadius: "50px" }}>
-              <Avatar
-                alt={props.userName}
-                src={props.profileImage || "https://sajsd.com"}
-              />
-            </Box>
-          </Box>
+        <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+          <Avatar
+            alt={props.userName}
+            src={props.profileImage || "https://sajsd.com"}
+          />
           <label className="userName">{props.userName}</label>
         </Box>
       </Box>
@@ -201,27 +203,44 @@ export const PostContainer = (props: Props) => {
           mt: "20px",
         }}
       >
-        <Box>
-          <IconButton aria-label="heart" onClick={onClickHandleLike}>
-            <FavoriteRounded
-              sx={{
-                color: isLiked ? "#EB4D4B" : "#CAD5E2",
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box>
+            <IconButton aria-label="heart" onClick={onClickHandleLike}>
+              <FavoriteRounded
+                sx={{
+                  color: isLiked ? "#EB4D4B" : "#CAD5E2",
+                }}
+              />
+            </IconButton>
+            {props.postLikes.length ? (
+              <p className="likes-text">
+                {props.postLikes.length}
+                {props.postLikes.length > 1 ? " likes" : " like"}
+              </p>
+            ) : (
+              ""
+            )}
+          </Box>
+          <Box>
+            <IconButton
+              aria-label="comments"
+              onClick={() => {
+                setPopup(true);
+                setReplyFocus(false);
               }}
-            />
-          </IconButton>
-          <IconButton
-            aria-label="comments"
-            onClick={() => {
-              setPopup(true);
-              setReplyFocus(false);
-            }}
-          >
-            <ChatBubbleOutlineOutlined />
-          </IconButton>
+            >
+              <ChatBubbleOutlineOutlined />
+            </IconButton>
+          </Box>
         </Box>
         <Box>
-          <IconButton aria-label="save">
-            <BookmarkBorderSharp />
+          <IconButton aria-label="save" onClick={onClickHandleSave}>
+            {isSaved ? <Bookmark /> : <BookmarkBorderOutlined />}
           </IconButton>
         </Box>
       </Box>
@@ -234,7 +253,7 @@ export const PostContainer = (props: Props) => {
       <p
         className="viewAll-comments"
         onClick={() => {
-          setShowComments((prev) => !prev);
+          setPopup((prev) => !prev);
         }}
       >
         view all comments
@@ -248,6 +267,8 @@ export const PostContainer = (props: Props) => {
               return (
                 <Comments
                   key={each._id}
+                  eachCommentId={each._id}
+                  commentLikes={each.likes}
                   commentId={each._id}
                   comment={each.comment}
                   userName={each.createdBy.name}
@@ -257,6 +278,7 @@ export const PostContainer = (props: Props) => {
                   reply={each.reply}
                   replyFocus={replyFocus}
                   onClickReply={onClickReply}
+                  renderDuplicate={renderDuplicate}
                 />
               );
             })
@@ -301,6 +323,8 @@ export const PostContainer = (props: Props) => {
         postCaption={props.postCaption}
         createdAt={props.createdAt}
         postId={props.postId}
+        postLikes={props.postLikes}
+        setRenderLikes={props.setRenderLikes}
       />
     </div>
   );

@@ -1,0 +1,39 @@
+.container-pop-saved {
+  display: flex;
+  width: 100%;
+  position: relative;
+  flex-direction: row;
+  margin: 0px;
+}
+.imageShow-saved {
+  position: relative;
+  width: 304px;
+  height: 304px;
+}
+.imageEdit2-saved {
+  position: relative;
+  width: 304px;
+  height: 304px;
+}
+
+.next-icon-saved {
+  bottom: 50%;
+  left: 75%;
+  position: fixed;
+}
+.prev-icon-saved {
+  bottom: 50%;
+  position: fixed;
+}
+
+.container-saved {
+  width: 304px;
+  height: 304px;
+  border-radius: 8px;
+  padding: 8px, 0px, 0px, 0px;
+
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  padding-left: 0px;
+  padding-right: 0px;
+  margin: 16px;
+}

@@ -6,6 +6,8 @@ import { paths } from "../routes/routes.config";
 import { showErrorToast } from "./toastUtil";
 import { baseURL } from "./constants/urls";
 
+const getToken = Cookie.get("_token");
+const token = "Bearer " + getToken;
 let currentUserFromStorage: any;
 
 /*
@@ -36,6 +38,8 @@ const currentUserSubject = new BehaviorSubject(
  * Export as a Type
  */
 export const authenticationService = {
+  redirectToHomePage,
+  redirectToSavedPage,
   emailVerification,
   passwordVerification,
   // locateToLogin,
@@ -247,12 +251,22 @@ function isUserAndTokenAvailable() {
 /*
  * Fetch current user
  */
-function loadCurrentUser() {
-  get(`/api/auth/self`).then((response: any) => {
+function loadCurrentUser(token: string) {
+  return get(`${baseURL}/auth/self`, {
+    headers: { Authorization: `Bearer ${token}` },
+  }).then((response: any) => {
     localStorage.setItem("currentUser", JSON.stringify(response));
     currentUserSubject.next(response);
-    // currentOrganizationSubject.next(response._org[0]);
+    return response;
   });
+  // get(`${baseURL}/auth/self`, {
+  //   headers: { Authorization: `Bearer ${token}` },
+  // }).then((response: any) => {
+  //   localStorage.setItem("currentUser", JSON.stringify(response));
+  //   currentUserSubject.next(response);
+  //   return response;
+  //   // currentOrganizationSubject.next(response._org[0]);
+  // });
 }
 
 /*
@@ -260,7 +274,6 @@ function loadCurrentUser() {
  */
 function handleLogin(response: any) {
   // store user details and jwt token in local storage to keep user logged in between page refreshes
-  console.log(response);
 
   Cookie.set("_token", response.token, { expires: 1, path: "/" });
 
@@ -270,5 +283,21 @@ function handleLogin(response: any) {
 
   if (response.user && !response.user._pre) {
     history.push(paths.home);
+  }
+}
+
+//
+
+function redirectToHomePage() {
+  history.push("/home");
+  window.location.reload();
+}
+
+function redirectToSavedPage() {
+  if (window.location.pathname === "/saved") {
+    window.scrollTo(0, 0);
+  } else {
+    history.push("/saved");
+    window.location.reload();
   }
 }
