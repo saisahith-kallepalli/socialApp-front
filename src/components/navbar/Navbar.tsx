@@ -18,13 +18,15 @@ import {
   ManageAccounts,
 } from "@mui/icons-material";
 import Tooltip from "@mui/material/Tooltip";
-import { Avatar, Button, Fade, Popper } from "@mui/material";
+import { Avatar, Badge, Button, Fade, Popper } from "@mui/material";
 import ImageUpload from "../Popups/uploadImage/ImageUpload";
 import Popup from "reactjs-popup";
-import { Box } from "@mui/system";
+import { Box, styled } from "@mui/system";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { authenticationService } from "../../utils/auth.service";
+import { Modal } from "react-bootstrap";
+import EditProfile from "../Popups/edit-profile/editProfile";
 
 export type NavbarProps = {
   /**
@@ -35,7 +37,8 @@ export type NavbarProps = {
 
 export const Navbar = ({ onLogout }: NavbarProps) => {
   const [close, setClose] = React.useState<boolean>(false);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [openProfile, setOpenProfile] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const onClickProfile = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -48,7 +51,7 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
   const imagePopper = (event: React.MouseEvent<HTMLElement>) => {
     setClose((prev) => !prev);
   };
-  const user = useSelector((state: any) => state.userData.user)
+  const user = useSelector((state: any) => state.userData.user);
   return (
     <AppBar
       sx={{
@@ -71,18 +74,10 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
           sx={{ mr: 2 }}
         >
           <img
-            src="https://res.cloudinary.com/sahith/image/upload/v1653291009/Icon_1_nfizmp.png"
+            src="https://res.cloudinary.com/sahith/image/upload/v1654756082/Logo_hr2fsm.png"
             alt="icon"
             className="icon-config"
           />
-          <Typography
-            variant="h6"
-            color="inherit"
-            component="div"
-            style={{ flex: 1, color: "#000000" }}
-          >
-            Social Feed
-          </Typography>
         </IconButton>
         <Box>
           <Tooltip
@@ -119,77 +114,63 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
             </IconButton>
           </Tooltip>
           <IconButton onClick={onClickProfile}>
-            <Avatar alt={user.name} src={user.image || "https://sajsd.com"} />
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: "top", horizontal: "left" }}
+              variant="dot"
+              color="success"
+            >
+              <Avatar alt={user.name} src={user.image || "https://sajsd.com"} />
+            </Badge>
             <label className="userNameNav">{user.name}</label>
           </IconButton>
-          {/* <Box sx={{ border: "2px solid #ffffff", borderRadius: "50px" }}>
-            
-            <label className="userName">{user.name}</label>
-          </Box> */}
-          {/* <Tooltip title="Logout">
-            <Button
-              variant="text"
-              style={{ color: "#000000", marginLeft: "auto" }}
-              onClick={onLogout}
-            >
-              <Logout />
-            </Button>
-          </Tooltip> */}
+
           <Popper
-            placement="bottom-end"
+            placement="top"
             disablePortal={true}
             id={profilePopperID}
             open={open}
             anchorEl={anchorEl}
             transition
-            modifiers={[
-              {
-                name: "flip",
-                enabled: true,
-                options: {
-                  altBoundary: true,
-                  rootBoundary: "document",
-                  padding: 8,
-                },
-              },
-              {
-                name: "preventOverflow",
-                enabled: true,
-                options: {
-                  altAxis: true,
-                  altBoundary: true,
-                  tether: true,
-                  rootBoundary: "viewport",
-                  padding: 8,
-                },
-              },
-            ]}
           >
             {({ TransitionProps }) => (
               <Fade {...TransitionProps}>
                 <Box className="profilePopper">
-                  <Button>
-                    <IconButton>
-                      <ManageAccounts />
-                      <label className="popupNames">profile</label>
-                    </IconButton>
-                  </Button>
-                  <Button>
-                    <IconButton>
-                      <LockReset />
-                      <label className="popupNames">change password</label>
-                    </IconButton>
-                  </Button>
-                  <Button>
-                    <IconButton onClick={onLogout}>
-                      <Logout />
-                      <label className="popupNames">logout</label>
-                    </IconButton>
-                  </Button>
+                  <IconButton
+                    onClick={() => {
+                      setOpenProfile(true);
+                      setOpen(false);
+                    }}
+                  >
+                    <ManageAccounts />
+                    <label className="popupNames">profile</label>
+                  </IconButton>
+                  <IconButton>
+                    <LockReset />
+                    <label className="popupNames">change password</label>
+                  </IconButton>
+                  <IconButton onClick={onLogout}>
+                    <Logout />
+                    <label className="popupNames">logout</label>
+                  </IconButton>
                 </Box>
               </Fade>
             )}
           </Popper>
+          <Modal
+            show={openProfile}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            onHide={() => setOpenProfile(false)}
+          >
+            <Modal.Header closeButton>
+              <div className="mx-auto ps-5">
+                <h4 className="ps-5">Profile Update</h4>
+              </div>
+            </Modal.Header>
+            <EditProfile />
+          </Modal>
         </Box>
       </Toolbar>
     </AppBar>

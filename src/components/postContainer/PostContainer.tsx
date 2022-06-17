@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
+import Picker from "emoji-picker-react";
+
 // import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import {
   Avatar,
+  Badge,
   Button,
   IconButton,
   Input,
@@ -21,6 +24,7 @@ import {
   BookmarkBorderOutlined,
   BookmarkBorderSharp,
   ChatBubbleOutlineOutlined,
+  EmojiEmotions,
   FavoriteBorderOutlined,
   FavoriteRounded,
   VisibilityOff,
@@ -33,6 +37,7 @@ import Moment from "react-moment";
 import { FormControl, Modal } from "react-bootstrap";
 import PostPopup from "../Popups/postPopup/postPopup";
 import { useSelector } from "react-redux";
+import Popup from "reactjs-popup";
 type Props = {
   userName: string;
   profileImage: string;
@@ -43,6 +48,8 @@ type Props = {
   postLikes: Array<any>;
   setRenderLikes: any;
   createdAt: any;
+  createdById: string;
+  isUserActive: boolean;
 };
 
 export const PostContainer = (props: Props) => {
@@ -53,12 +60,17 @@ export const PostContainer = (props: Props) => {
   const [userData, setUserData] = useState<any>({});
   const [indexImage, setIndexImage] = useState<number>(0);
   const [duplicate, setDuplicate] = useState<number>(0);
+  const [showEmojis, setShowEmojis] = useState<boolean>(false);
+  const emojisShow = () => {
+    setShowEmojis((prev) => !prev);
+  };
   const [postComment, setPostComment] = useState<any>({
     comment: "",
     focus: false,
   });
   const [commentId, setCommentId] = useState<string>("");
   const [replyFocus, setReplyFocus] = useState<boolean>(false);
+  const userId = useSelector((state: any) => state.userData.user._id);
   const onClickReply = (id: string) => {
     commentRef.current.focus();
     setReplyFocus(true);
@@ -66,8 +78,9 @@ export const PostContainer = (props: Props) => {
   };
   const saved = useSelector((state: any) => state.userData.user.saved);
   const isLiked: number = props.postLikes.filter(
-    (each) => each.id === userData?._id
+    (each) => each.id._id === userId
   ).length;
+  console.log(props.postId);
   const isSaved: number = saved.filter(
     (each: any) => each.id._id === props.postId
   ).length;
@@ -87,6 +100,7 @@ export const PostContainer = (props: Props) => {
   const renderDuplicate = () => {
     setDuplicate((prev) => prev + 1);
   };
+
   const onclickComment = async () => {
     const value = await commentService.postComment(props.postId, {
       comment: postComment.comment,
@@ -96,6 +110,7 @@ export const PostContainer = (props: Props) => {
     setPostComment({ comment: "" });
     setDuplicate((prev) => prev + 1);
   };
+
   const onclickReplay = async () => {
     const value = await commentService.replyComment(props.postId, commentId, {
       comment: postComment.comment,
@@ -149,10 +164,25 @@ export const PostContainer = (props: Props) => {
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-          <Avatar
-            alt={props.userName}
-            src={props.profileImage || "https://sajsd.com"}
-          />
+          {props.isUserActive ? (
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: "top", horizontal: "left" }}
+              variant="dot"
+              color="success"
+            >
+              <Avatar
+                alt={props.userName}
+                src={props.profileImage || "https://sajsd.com"}
+              />
+            </Badge>
+          ) : (
+            <Avatar
+              alt={props.userName}
+              src={props.profileImage || "https://sajsd.com"}
+            />
+          )}
+
           <label className="userName">{props.userName}</label>
         </Box>
       </Box>
@@ -288,7 +318,13 @@ export const PostContainer = (props: Props) => {
           placeholder={
             replyFocus ? "write reply...." : "Write Comment.........."
           }
-          sx={{ pb: "15px", pl: "5px", pr: "5px", mt: "5px", width: "100%" }}
+          sx={{
+            pb: "15px",
+            pl: "5px",
+            pr: "5px",
+            mt: "5px",
+            width: "100%",
+          }}
           inputRef={commentRef}
           value={postComment.comment}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -308,9 +344,34 @@ export const PostContainer = (props: Props) => {
                 )}
               </InputAdornment>
             ),
+            startAdornment: (
+              <Popup
+                trigger={(showEmojis) => (
+                  <InputAdornment position="start" onClick={emojisShow}>
+                    <IconButton>
+                      <EmojiEmotions />
+                    </IconButton>
+                  </InputAdornment>
+                )}
+                position="top left"
+              >
+                <Box>
+                  <Picker
+                    disableSearchBar={true}
+                    onEmojiClick={(e: any, emoji: any) =>
+                      setPostComment((prev: any) => ({
+                        ...prev,
+                        comment: prev.comment + emoji.emoji,
+                      }))
+                    }
+                  />
+                </Box>
+              </Popup>
+            ),
           }}
         />
       </div>
+
       <PostPopup
         popup={popup}
         setPopup={setPopup}
@@ -325,6 +386,8 @@ export const PostContainer = (props: Props) => {
         postId={props.postId}
         postLikes={props.postLikes}
         setRenderLikes={props.setRenderLikes}
+        createdById={props.createdById}
+        isUserActive={props.isUserActive}
       />
     </div>
   );

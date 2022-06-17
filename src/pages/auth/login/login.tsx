@@ -31,8 +31,15 @@ export default function Login() {
   const onClickShowPassword = () => {
     setData((prev) => ({ ...prev, showPassword: !prev.showPassword }));
   };
-  const responseGoogle = (response: any) => {
+  const responseGoogle = async (response: any) => {
     console.log(response.tokenId);
+    const userData = await authenticationService.googleLogin({
+      idToken: response.tokenId,
+    });
+    console.log(userData);
+    setButtonDisabled(false);
+    await dispatch(userDataChange(userData));
+    await fetchUser(userData.token);
   };
 
   /*
@@ -46,13 +53,14 @@ export default function Login() {
     setButtonDisabled(true);
     if (emailVerify && passwordVerify) {
       const userData = await authenticationService.verifyCredentials(formData);
+      setButtonDisabled(false);
       await dispatch(userDataChange(userData));
       await fetchUser(userData.token);
-      setButtonDisabled(false);
     } else {
       showErrorToast("give valid credentials");
       setButtonDisabled(false);
     }
+    setButtonDisabled(false);
   };
   const fetchUser = async (token: string) => {
     const userDetails = await authenticationService.loadCurrentUser(token);
@@ -105,7 +113,9 @@ export default function Login() {
           >
             Sign In
           </LoadingButton>
-          <p className="forget">forget password?</p>
+          <p className="forget">
+            <Link to={paths.forgotPassword}>forget password?</Link>
+          </p>
           <p className="signIn">
             Don't have Account?
             <Link to={paths.signup}>Sign up</Link>

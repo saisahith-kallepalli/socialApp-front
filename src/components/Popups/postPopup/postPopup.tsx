@@ -5,11 +5,13 @@ import {
   BookmarkBorderOutlined,
   BookmarkBorderSharp,
   ChatBubbleOutlineOutlined,
+  EmojiEmotions,
   FavoriteRounded,
   ModelTraining,
 } from "@mui/icons-material";
 import {
   Avatar,
+  Badge,
   Button,
   IconButton,
   InputAdornment,
@@ -18,13 +20,16 @@ import {
 import { Box } from "@mui/system";
 import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
-import { Modal } from "react-bootstrap";
+import { Modal, Overlay } from "react-bootstrap";
 import Moment from "react-moment";
 import { useSelector } from "react-redux";
 import { commentService } from "../../../utils/comments.service";
 import { postService } from "../../../utils/posts.service";
 import Comments from "../../comments/Comments";
 import "./postPopup.scss";
+import Picker from "emoji-picker-react";
+import Popup from "reactjs-popup";
+
 type Props = {
   popup: boolean;
   setPopup: any;
@@ -38,7 +43,9 @@ type Props = {
   createdAt: any;
   postId: string;
   postLikes: any;
+  createdById: string;
   setRenderLikes: any;
+  isUserActive: boolean;
 };
 
 const PostPopup = (props: Props) => {
@@ -57,6 +64,8 @@ const PostPopup = (props: Props) => {
     setShowComments,
     postCaption,
     createdAt,
+    createdById,
+    isUserActive,
   } = props;
   const [indexImagePopup, setIndexImagePopup] = useState<number>(0);
   const [duplicate, setDuplicate] = useState<number>(0);
@@ -65,6 +74,12 @@ const PostPopup = (props: Props) => {
   const [commentId, setCommentId] = useState<string>("");
   const [replyFocus, setReplyFocus] = useState<boolean>(false);
   const saved = useSelector((state: any) => state.userData.user.saved);
+  const user = useSelector((state: any) => state.userData.user);
+  const [showEmojis, setShowEmojis] = useState<boolean>(false);
+  const target = useRef(null);
+  const emojisShow = () => {
+    setShowEmojis((prev) => !prev);
+  };
   const isSaved: number = saved.filter(
     (each: any) => each.id._id === props.postId
   ).length;
@@ -193,15 +208,25 @@ const PostPopup = (props: Props) => {
                   p: "0px",
                 }}
               >
-                <Box className="avatar-image-popup">
-                  <Box
-                    sx={{ border: "2px solid #ffffff", borderRadius: "50px" }}
-                  >
+                <Box sx={{ border: "2px solid #ffffff", borderRadius: "50px" }}>
+                  {isUserActive ? (
+                    <Badge
+                      overlap="circular"
+                      anchorOrigin={{ vertical: "top", horizontal: "left" }}
+                      variant="dot"
+                      color="success"
+                    >
+                      <Avatar
+                        alt={userName}
+                        src={profileImage || "https://sajsd.com"}
+                      />
+                    </Badge>
+                  ) : (
                     <Avatar
                       alt={userName}
                       src={profileImage || "https://sajsd.com"}
                     />
-                  </Box>
+                  )}
                 </Box>
                 <label className="userName">{userName}</label>
               </Box>
@@ -265,6 +290,19 @@ const PostPopup = (props: Props) => {
                 marginBottom: "30px",
               }}
             >
+              {showEmojis && (
+                <Box sx={{ zIndex: "500" }}>
+                  <Picker
+                    disableSearchBar={true}
+                    onEmojiClick={(e: any, emoji: any) =>
+                      setPostComment((prev: any) => ({
+                        ...prev,
+                        comment: prev.comment + emoji.emoji,
+                      }))
+                    }
+                  />
+                </Box>
+              )}
               {comments.length
                 ? comments.map((each) => {
                     return (
@@ -318,6 +356,17 @@ const PostPopup = (props: Props) => {
                   ) : (
                     <Button onClick={onclickComment}>comment</Button>
                   )}
+                </InputAdornment>
+              ),
+              startAdornment: (
+                <InputAdornment
+                  ref={target}
+                  position="start"
+                  onClick={emojisShow}
+                >
+                  <IconButton>
+                    <EmojiEmotions />
+                  </IconButton>
                 </InputAdornment>
               ),
             }}

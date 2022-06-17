@@ -22,7 +22,6 @@ export default function Home() {
   const [limit, setLimit] = useState<number>(5);
   const posts = useSelector((state: any) => state.postsData.posts.results);
   const newPost = useSelector((state: any) => state.postsData.newPost);
-  // console.log(postsDataGet.posts.results);
   useEffect(() => {
     fetchPosts();
     fetchUser();
@@ -65,6 +64,8 @@ export default function Home() {
               <PostContainer
                 key={each._id}
                 userName={each.createdBy.name}
+                isUserActive={each.createdBy.isActive}
+                createdById={each.createdBy._id}
                 profileImage={each.createdBy.image}
                 postImages={each.image}
                 postId={each._id}

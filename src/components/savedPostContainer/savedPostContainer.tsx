@@ -62,7 +62,6 @@ export const SavedPostContainer = (props: Props) => {
   const onClickShowComments = async () => {
     const comments = await commentService.getComments(props.postId);
     setComments(comments.comments);
-
   };
   useEffect(() => {
     const userData: any = JSON.parse(
@@ -164,6 +163,7 @@ export const SavedPostContainer = (props: Props) => {
         postId={props.postId}
         postLikes={props.postLikes}
         setRenderLikes={props.setRenderLikes}
+        createdById={props.profileId}
       />
     </div>
   );

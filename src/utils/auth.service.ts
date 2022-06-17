@@ -3,7 +3,7 @@ import { get, post, put } from "./http/httpMethods";
 import Cookie from "js-cookie";
 import history from "../routes/history";
 import { paths } from "../routes/routes.config";
-import { showErrorToast } from "./toastUtil";
+import { showErrorToast, showInfoToast, showSuccessToast } from "./toastUtil";
 import { baseURL } from "./constants/urls";
 
 const getToken = Cookie.get("_token");
@@ -42,10 +42,13 @@ export const authenticationService = {
   redirectToSavedPage,
   emailVerification,
   passwordVerification,
+  sendLinkForForgotPassword,
+  resetTheNewPassword,
   // locateToLogin,
   // locateToSignUp,
   registerUser,
   //initials
+  googleLogin,
   logout,
   authToken,
   register,
@@ -107,6 +110,44 @@ function verifyCredentials(payload: any) {
       showErrorToast(
         error.message || "Error occurred while validating credentials!"
       );
+      return error;
+    });
+}
+
+function sendLinkForForgotPassword(payload: any) {
+  return post(`${baseURL}/auth/forgot-Password`, payload)
+    .then(() => {
+      showInfoToast("reset password link sent to mail");
+    })
+    .catch((error: any) => {
+      showErrorToast(error.message || "give valid email");
+    });
+}
+function resetTheNewPassword(payload: any, resetToken: string) {
+  return post(`${baseURL}/auth/reset-password?token=${resetToken}`, payload)
+    .then(() => {
+      showSuccessToast("password is changed");
+    })
+    .catch((error: any) => {
+      showErrorToast(error.message || "link is expired");
+    });
+}
+function googleLogin(payload: any) {
+  // return new Promise((resolve, reject) => {
+  //   handleLogin({ token: "AABBCC", user: defaultUsers[0] });
+  //   resolve(true);
+  // });
+  return post(`${baseURL}/auth/google-login`, payload)
+    .then((response: any) => {
+      handleLogin({
+        token: response.token,
+        user: response.user,
+      });
+
+      return response;
+    })
+    .catch((error: any) => {
+      showErrorToast(error.message);
       return error;
     });
 }

@@ -108,7 +108,7 @@ const Signup = () => {
           sx={{ width: "80%" }}
           loading={isButtonDisabled}
         >
-          Sign In
+          Sign up
         </LoadingButton>
         <p className="signIn">
           Already have an account?

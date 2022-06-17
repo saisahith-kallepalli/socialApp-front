@@ -1,7 +1,10 @@
 import {
+  ArrowBack,
   ArrowBackIos,
+  ArrowBackIosNewOutlined,
   ArrowForwardIos,
   Clear,
+  Collections,
   EmojiEmotions,
 } from "@mui/icons-material";
 import Picker from "emoji-picker-react";
@@ -16,7 +19,8 @@ import Cookies from "js-cookie";
 import { SpinnerDotted } from "spinners-react";
 import { useDispatch, useSelector } from "react-redux";
 import { isNewPost } from "../../../redux/reducers";
-
+import ReactPlayer from "react-player";
+import SliderUploader from "../../slider-uploader/sliderUploader";
 const fileTypes = ["JPG", "PNG", "GIF"];
 type Props = {};
 const uploader: any = {
@@ -30,6 +34,7 @@ const ImageUpload = (props: Props) => {
   const [imageUrls, setImageUrls] = useState<Array<any>>([]);
   const [indexImage, setIndexImage] = useState<number>(0);
   const [caption, setCaption] = useState<string>("");
+  const [showImages, setShowImages] = useState<boolean>(false);
   const [showEmojis, setShowEmojis] = useState<Boolean>(false);
   const [uploading, setUploading] = useState<string>("not_uploaded");
   const [file, setFile] = useState(null);
@@ -41,8 +46,8 @@ const ImageUpload = (props: Props) => {
 
     mainRoot.addEventListener("click", (e: any) => {
       if (
-        e.target.className.includes("emoji") ||
-        e.target.className.includes("icn")
+        e.target?.className?.includes("emoji") ||
+        e.target?.className?.includes("icn")
       ) {
         setShowEmojis(true);
       } else {
@@ -58,7 +63,7 @@ const ImageUpload = (props: Props) => {
     data.append("caption", caption);
     await postService.newPost(data);
     setUploading(uploader.uploaded);
-    dispatch(isNewPost());
+    dispatch(isNewPost(""));
     setImageUrls([]);
     setIndexImage(0);
     setShowEmojis(false);
@@ -76,6 +81,7 @@ const ImageUpload = (props: Props) => {
     if (keysOfImages) {
       keysOfImages.map((each: any | null) => {
         imageObjects.push(event[each]);
+        console.log(event[each]);
       });
     }
     setImageUrls((prev) => [...prev, ...imageObjects]);
@@ -88,8 +94,8 @@ const ImageUpload = (props: Props) => {
     }
   };
 
-  const removeImage = () => {
-    const filteredImages = imageUrls.filter((e, i) => i !== indexImage);
+  const removeImage = (index: any) => {
+    const filteredImages = imageUrls.filter((e, i) => i !== index);
     setImageUrls(filteredImages);
     setIndexImage(0);
   };
@@ -100,7 +106,7 @@ const ImageUpload = (props: Props) => {
       setIndexImage(indexImage - 1);
     }
   };
-  const onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeImage = (e: React.ChangeEvent<any>) => {
     e.stopPropagation();
     const keysOfImages = Object.keys(e.target.files);
     const imageObjects: Array<any> = [];
@@ -156,6 +162,7 @@ const ImageUpload = (props: Props) => {
                   />
                   <input
                     id="contained-button-file"
+                    accept="image/*"
                     multiple
                     type="file"
                     style={{ display: "none" }}
@@ -173,12 +180,14 @@ const ImageUpload = (props: Props) => {
               </Box>
             </FileUploader>
           )}
+
           {imageUrls.length ? (
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
+                height: "100%",
               }}
             >
               <Box
@@ -191,25 +200,15 @@ const ImageUpload = (props: Props) => {
                   pl: "5px",
                 }}
               >
-                <label htmlFor="contained-button">
-                  <input
-                    id="contained-button"
-                    multiple
-                    type="file"
-                    style={{ display: "none" }}
-                    onChange={onChangeImage}
-                  />
-                  <Button variant="contained" component="span">
-                    Upload More
-                  </Button>
-                </label>
+                <IconButton onClick={() => setImageUrls([])}>
+                  <ArrowBack />
+                </IconButton>
 
                 <Button variant="contained" onClick={onClickPost}>
                   Post
                 </Button>
               </Box>
               <hr />
-
               <TextField
                 id="outlined-multiline-static"
                 label="Caption"
@@ -229,63 +228,80 @@ const ImageUpload = (props: Props) => {
                   ),
                 }}
               />
-
-              <>
-                <div className="container-pop">
-                  {/* <img className="image-posted " src={photo.image[0].url} alt="mine" /> */}
-                  <div className="imageEditUploaded">
-                    <img
-                      className="imageEditUploaded"
-                      src={(window.URL || window.webkitURL).createObjectURL(
-                        imageUrls[indexImage]
-                      )}
-                      alt="mine"
+              <div className="container-pop">
+                <div className="imageEditUploaded">
+                  <img
+                    className="imageEditUploaded"
+                    src={(window.URL || window.webkitURL).createObjectURL(
+                      imageUrls[indexImage]
+                    )}
+                    alt="mine"
+                  />
+                  {/* {imageUrls.length > 1 && (
+                    <Clear
+                      className="multiple-icon-back"
+                      onClick={() => removeImage(indexImage)}
                     />
-                    {imageUrls.length > 1 && (
-                      <Clear
-                        className="multiple-icon-back"
-                        onClick={removeImage}
+                  )} */}
+                  {imageUrls.length > 1 ? (
+                    <IconButton
+                      sx={{
+                        visibility: indexImage >= 1 ? "visible" : "hidden",
+                      }}
+                      className="multiple-icon1"
+                      onClick={prevImage}
+                    >
+                      <ArrowBackIos />
+                    </IconButton>
+                  ) : (
+                    ""
+                  )}
+                  {imageUrls.length > 1 ? (
+                    <IconButton
+                      className="multiple-icon2"
+                      onClick={nextImage}
+                      sx={{
+                        visibility:
+                          indexImage < imageUrls.length - 1
+                            ? "visible"
+                            : "hidden",
+                      }}
+                    >
+                      <ArrowForwardIos />
+                    </IconButton>
+                  ) : (
+                    ""
+                  )}
+                  <Box
+                    className="multiple-uploaded-images-bottom"
+                    sx={{ zIndex: 500 }}
+                  >
+                    {showImages && (
+                      <SliderUploader
+                        imageArray={imageUrls}
+                        removeImage={removeImage}
+                        onChangeImage={onChangeImage}
                       />
                     )}
-                    {imageUrls.length > 1 ? (
-                      <IconButton
-                        sx={{
-                          visibility: indexImage >= 1 ? "visible" : "hidden",
-                        }}
-                        className="multiple-icon1"
-                        onClick={prevImage}
-                      >
-                        <ArrowBackIos />
-                      </IconButton>
-                    ) : (
-                      ""
-                    )}
-                    {imageUrls.length > 1 ? (
-                      <IconButton
-                        className="multiple-icon2"
-                        onClick={nextImage}
-                        sx={{
-                          visibility:
-                            indexImage < imageUrls.length - 1
-                              ? "visible"
-                              : "hidden",
-                        }}
-                      >
-                        <ArrowForwardIos />
-                      </IconButton>
-                    ) : (
-                      ""
-                    )}
-                  </div>
+                  </Box>
+                  <IconButton
+                    className="multiple-icon-images-bottom"
+                    onClick={() => setShowImages((prev) => !prev)}
+                    sx={{ backgroundColor: "#f5f2f27e" }}
+                  >
+                    <Collections />
+                  </IconButton>
                 </div>
-              </>
+              </div>
               {showEmojis ? (
-                <Picker
-                  disableSearchBar={true}
-                  onEmojiClick={(e: any, emoji: any) =>
-                    setCaption((prev) => prev + emoji.emoji)
-                  }
-                />
+                <Box sx={{ position: "absolute" }}>
+                  <Picker
+                    disableSearchBar={true}
+                    onEmojiClick={(e: any, emoji: any) =>
+                      setCaption((prev) => prev + emoji.emoji)
+                    }
+                  />
+                </Box>
               ) : (
                 ""
               )}
@@ -339,3 +355,6 @@ const ImageUpload = (props: Props) => {
 };
 
 export default ImageUpload;
+{
+  /* ; */
+}
