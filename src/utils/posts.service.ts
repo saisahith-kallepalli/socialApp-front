@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 import { baseURL } from "./constants/urls";
 import { del, get, post, put } from "./http/httpMethods";
+import { error } from "console";
 
 const authToken = Cookies.get("_token");
 const token = "Bearer " + authToken;
@@ -8,8 +9,12 @@ function getPosts(limit: number) {
   return get(`${baseURL}/posts?limit=${limit}`, {
     headers: { Authorization: `${token}` },
   }).then((response: any) => {
+    console.log(response)
     return response;
-  });
+  })
+  .catch((error)=>{
+    console.log(error,"==Error")
+  })
 }
 
 function newPost(data: any) {

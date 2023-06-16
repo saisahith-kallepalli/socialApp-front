@@ -78,9 +78,9 @@ export const PostContainer = (props: Props) => {
   };
   const saved = useSelector((state: any) => state.userData.user.saved);
   const isLiked: number = props.postLikes.filter(
-    (each) => each.id._id === userId
+    (each) => each.id=== userId
   ).length;
-  console.log(props.postId);
+  console.log(props.postLikes,"====>",userId,isLiked);
   const isSaved: number = saved.filter(
     (each: any) => each.id._id === props.postId
   ).length;

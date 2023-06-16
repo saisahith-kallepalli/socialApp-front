@@ -312,9 +312,9 @@ const PostPopup = (props: Props) => {
                         key={each._id}
                         commentId={each._id}
                         comment={each.comment}
-                        userName={each.createdBy.name}
-                        profileImage={each.createdBy.image}
-                        profileId={each.createdBy._id}
+                        userName={each?.createdBy?.name}
+                        profileImage={each?.createdBy?.image}
+                        profileId={each?.createdBy?._id}
                         createdAt={each.createdAt}
                         reply={each.reply}
                         replyFocus={replyFocus}
