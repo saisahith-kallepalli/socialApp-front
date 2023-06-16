@@ -75,6 +75,7 @@ export const PostContainer = (props: Props) => {
     commentRef.current.focus();
     setReplyFocus(true);
     setCommentId(id);
+    
   };
   const saved = useSelector((state: any) => state.userData.user.saved);
   const isLiked: number = props.postLikes.filter(

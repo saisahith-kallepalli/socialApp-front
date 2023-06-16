@@ -39,6 +39,7 @@ function savePost(id: string) {
     return response;
   });
 }
+
 function disLikePost(id: string) {
   return del(`${baseURL}/posts/like/${id}`, {
     headers: { Authorization: `${token}` },
