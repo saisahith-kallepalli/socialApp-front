@@ -106,6 +106,7 @@ export const PostContainer = (props: Props) => {
     const value = await commentService.postComment(props.postId, {
       comment: postComment.comment,
     });
+    setPopup((prev) => !prev)
     setReplyFocus(false);
     setShowComments(true);
     setPostComment({ comment: "" });
@@ -154,6 +155,7 @@ export const PostContainer = (props: Props) => {
       setIndexImage(indexImage - 1);
     }
   };
+  {console.log(props)}
   return (
     <div className="container">
       <Box
@@ -180,10 +182,10 @@ export const PostContainer = (props: Props) => {
           ) : (
             <Avatar
               alt={props.userName}
-              src={props.profileImage || "https://sajsd.com"}
+              src={props.profileImage || ""}
             />
           )}
-
+          
           <label className="userName">{props.userName}</label>
         </Box>
       </Box>
@@ -293,27 +295,7 @@ export const PostContainer = (props: Props) => {
         {props.createdAt}
       </Moment>
       <div>
-        {showComments
-          ? comments.map((each) => {
-              return (
-                <Comments
-                  key={each._id}
-                  eachCommentId={each._id}
-                  commentLikes={each.likes}
-                  commentId={each._id}
-                  comment={each.comment}
-                  userName={each.createdBy.name}
-                  profileImage={each.createdBy.image}
-                  profileId={each.createdBy._id}
-                  createdAt={each.createdAt}
-                  reply={each.reply}
-                  replyFocus={replyFocus}
-                  onClickReply={onClickReply}
-                  renderDuplicate={renderDuplicate}
-                />
-              );
-            })
-          : ""}
+       
         <TextField
           label={replyFocus ? "reply" : "comment"}
           placeholder={
