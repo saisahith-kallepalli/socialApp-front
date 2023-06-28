@@ -45,7 +45,7 @@ type Props = {
   postLikes: any;
   createdById: string;
   setRenderLikes: any;
-  isUserActive: boolean;
+  isUserActive?: boolean;
 };
 
 const PostPopup = (props: Props) => {

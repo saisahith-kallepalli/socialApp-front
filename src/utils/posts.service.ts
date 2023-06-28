@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import { baseURL } from "./constants/urls";
 import { del, get, post, put } from "./http/httpMethods";
-import { error } from "console";
+
 
 const authToken = Cookies.get("_token");
 const token = "Bearer " + authToken;

@@ -62,24 +62,15 @@ export const authenticationService = {
   localLogout,
   resendOTP,
   unsubscribeAll,
+  redirectToLogInPage,
   currentUser: currentUserSubject.asObservable(),
   get currentUserValue() {
     return currentUserSubject.value;
   },
-  // currentOrganization: currentOrganizationSubject.asObservable(),
-  // get currentOrganizationValue() {
-  //   return currentOrganizationSubject.value;
-  // },
+
 };
 
-// function locateToSignUp() {
-//   history.push(paths.signup);
-//   window.location.reload();
-// }
-// function locateToLogin() {
-//   history.push(paths.login);
-//   window.location.reload();
-// }
+
 function emailVerification(email: string) {
   return email.match(
     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -331,6 +322,11 @@ function handleLogin(response: any) {
 
 function redirectToHomePage() {
   history.push("/home");
+  window.location.reload();
+}
+
+function redirectToLogInPage() {
+  history.push("/auth/login");
   window.location.reload();
 }
 

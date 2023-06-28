@@ -74,7 +74,7 @@ export const SavedPostContainer = (props: Props) => {
   }, [duplicate, popup]);
   const onClickHandleLike = async () => {
     if (isLiked) {
-      await postService.disLikePost(props.postId);
+      await postService.likePost(props.postId);
       props.setRenderLikes();
     } else {
       await postService.likePost(props.postId);

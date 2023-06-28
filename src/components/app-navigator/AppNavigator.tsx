@@ -8,10 +8,16 @@ import AppLayout from "../../layouts/App/AppLayout";
 import PageNotFound from "../../pages/auth/page-not-found/page-not-found";
 import "./AppNavigator.scss";
 import { authenticationService } from "../../utils/auth.service";
+import Cookie from "js-cookie";
 
 export type AppNavigatorProps = any;
 
 export const AppNavigator = (props: AppNavigatorProps) => {
+  console.log("new set=====>",
+    authenticationService.currentUserValue,
+  );
+  const getToken = Cookie.get("_token");
+  console.log("object")
   return (
     <Router history={history}>
       <Switch>
@@ -19,8 +25,7 @@ export const AppNavigator = (props: AppNavigatorProps) => {
         {routes.map((item, index) => {
           if (item.path.includes("auth/")) {
             if (
-              authenticationService.currentUserValue &&
-              !authenticationService.currentUserValue._pre
+              authenticationService.currentUserValue && getToken
             ) {
               return (
                 <Redirect

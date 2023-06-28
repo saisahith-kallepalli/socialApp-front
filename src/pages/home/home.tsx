@@ -22,9 +22,15 @@ export default function Home() {
   const [limit, setLimit] = useState<number>(5);
   const posts = useSelector((state: any) => state.postsData.posts.results);
   const newPost = useSelector((state: any) => state.postsData.newPost);
+  console.log(posting)
   useEffect(() => {
-    fetchPosts();
-    fetchUser();
+    console.log("token",authToken)
+    if(authToken){
+      fetchPosts();
+      fetchUser();
+    }else{
+      authenticationService.redirectToLogInPage()
+    }
   }, [like, newPost, limit]);
   const fetchUser = async () => {
     const userDetails = await authenticationService.loadCurrentUser(
@@ -34,12 +40,15 @@ export default function Home() {
   };
   useEffect(() => {
     console.log(newPost);
-    fetchPosts();
-    window.scroll({
-      top: 0,
-      left: 100,
-      behavior: "smooth",
-    });
+    if(authToken){
+
+      fetchPosts();
+      window.scroll({
+        top: 0,
+        left: 100,
+        behavior: "smooth",
+      });
+    }
   }, [newPost]);
   const fetchPosts = async () => {
     const data = await postService.getPosts(limit);
@@ -64,17 +73,17 @@ export default function Home() {
 
               
               <PostContainer
-                key={each._id}
-                userName={each.createdBy.name}
-                isUserActive={each.createdBy.isActive}
-                createdById={each.createdBy._id}
-                profileImage={each.createdBy.image}
-                postImages={each.image}
-                postId={each._id}
-                postCaption={each.caption}
-                profileId={each.createdBy._id}
-                postLikes={each.likes}
-                createdAt={each.createdAt}
+                key={each?._id}
+                userName={each?.createdBy.name}
+                isUserActive={each?.createdBy.isActive}
+                createdById={each?.createdBy._id}
+                profileImage={each?.createdBy.image}
+                postImages={each?.image}
+                postId={each?._id}
+                postCaption={each?.caption}
+                profileId={each?.createdBy._id}
+                postLikes={each?.likes}
+                createdAt={each?.createdAt}
                 setRenderLikes={setRenderLikes}
               />
             );
