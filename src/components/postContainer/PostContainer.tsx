@@ -132,13 +132,10 @@ export const PostContainer = (props: Props) => {
     }
   };
   const onClickHandleSave = async () => {
-    if (isSaved) {
-      await postService.unSavePost(props.postId);
-      props.setRenderLikes();
-    } else {
+   
       await postService.savePost(props.postId);
       props.setRenderLikes();
-    }
+    
   };
   const nextImage = () => {
     if (props.postImages.length <= indexImage + 1) {

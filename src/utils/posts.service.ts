@@ -47,13 +47,7 @@ function disLikePost(id: string) {
     return response;
   });
 }
-function unSavePost(id: string) {
-  return del(`${baseURL}/posts/save/${id}`, {
-    headers: { Authorization: `${token}` },
-  }).then((response: any) => {
-    return response;
-  });
-}
+
 
 function savedPosts() {
   return get(`${baseURL}/posts/self/saved`, {
@@ -69,5 +63,4 @@ export const postService = {
   newPost,
   savedPosts,
   savePost,
-  unSavePost,
 };
