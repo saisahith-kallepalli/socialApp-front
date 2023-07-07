@@ -34,17 +34,10 @@ function likeComment(id: string) {
     return response;
   });
 }
-function dislikeComment(id: string) {
-  return del(`${baseURL}/comments/like/${id}`, {
-    headers: { Authorization: `${token}` },
-  }).then((response: any) => {
-    return response;
-  });
-}
+
 export const commentService = {
   getComments,
   postComment,
   replyComment,
   likeComment,
-  dislikeComment,
 };

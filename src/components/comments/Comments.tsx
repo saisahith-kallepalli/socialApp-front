@@ -29,13 +29,10 @@ const Comments = (props: Props) => {
     (each: any) => each.id === userData?._id
   ).length;
   const onClickHandleLike = async () => {
-    if (isLiked) {
-      await commentService.dislikeComment(props.eachCommentId);
-      props.renderDuplicate();
-    } else {
+    
       await commentService.likeComment(props.eachCommentId);
       props.renderDuplicate();
-    }
+    
   };
   return (
     <>

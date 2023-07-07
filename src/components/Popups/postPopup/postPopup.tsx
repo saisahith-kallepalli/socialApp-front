@@ -84,13 +84,10 @@ const PostPopup = (props: Props) => {
     (each: any) => each.id._id === props.postId
   ).length;
   const onClickHandleSave = async () => {
-    if (isSaved) {
-      await postService.unSavePost(props.postId);
-      props.setRenderLikes();
-    } else {
+  
       await postService.savePost(props.postId);
       props.setRenderLikes();
-    }
+    
   };
   const onClickReply = (id: string) => {
     commentRef.current.focus();
