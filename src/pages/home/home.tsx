@@ -22,14 +22,14 @@ export default function Home() {
   const [limit, setLimit] = useState<number>(5);
   const posts = useSelector((state: any) => state.postsData.posts.results);
   const newPost = useSelector((state: any) => state.postsData.newPost);
-  console.log(posting)
+  console.log(posting);
   useEffect(() => {
-    console.log("token",authToken)
-    if(authToken){
+    console.log("token", authToken);
+    if (authToken) {
       fetchPosts();
       fetchUser();
-    }else{
-      authenticationService.redirectToLogInPage()
+    } else {
+      authenticationService.redirectToLogInPage();
     }
   }, [like, newPost, limit]);
   const fetchUser = async () => {
@@ -40,8 +40,7 @@ export default function Home() {
   };
   useEffect(() => {
     console.log(newPost);
-    if(authToken){
-
+    if (authToken) {
       fetchPosts();
       window.scroll({
         top: 0,
@@ -66,15 +65,14 @@ export default function Home() {
           dataLength={posts?.length || 0}
           next={() => setLimit((prev) => prev + 1)}
           hasMore={true}
-          loader={<p>loading............</p>}
-        >
+          loader={<p>loading............</p>}>
           {posts?.map((each: any) => {
             return (
-
-              
               <PostContainer
                 key={each?._id}
                 userName={each?.createdBy.name}
+                firstName={each?.createdBy.firstName}
+                lastName={each?.createdBy.lastName}
                 isUserActive={each?.createdBy.isActive}
                 createdById={each?.createdBy._id}
                 profileImage={each?.createdBy.image}

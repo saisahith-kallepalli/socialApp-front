@@ -19,6 +19,30 @@ const updateProfileImage = async (data: any) => {
     });
 };
 
+const searchUsers = async (data: any) => {
+  return get(`${baseURL}/users?name=` + data, {
+    headers: { Authorization: `${token}` },
+  })
+    .then((response) => {
+      console.log(response);
+      return response;
+    })
+    .catch((error) => {
+      showErrorToast(error);
+    });
+};
+const getUserDetails = async (data: any) => {
+  return get(`${baseURL}/users/` + data, {
+    headers: { Authorization: `${token}` },
+  })
+    .then((response) => {
+      console.log(response, "=====>user");
+      return response;
+    })
+    .catch((error) => {
+      showErrorToast(error);
+    });
+};
 const removeProfileImage = async () => {
   return del(`${baseURL}/users/profile`, {
     headers: { Authorization: `${token}` },
@@ -50,4 +74,6 @@ export const profileService = {
   updateProfileImage,
   removeProfileImage,
   updateProfileDetails,
+  getUserDetails,
+  searchUsers,
 };

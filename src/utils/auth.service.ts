@@ -40,6 +40,7 @@ const currentUserSubject = new BehaviorSubject(
 export const authenticationService = {
   redirectToHomePage,
   redirectToSavedPage,
+  redirectToProfilePage,
   emailVerification,
   passwordVerification,
   sendLinkForForgotPassword,
@@ -67,9 +68,7 @@ export const authenticationService = {
   get currentUserValue() {
     return currentUserSubject.value;
   },
-
 };
-
 
 function emailVerification(email: string) {
   return email.match(
@@ -186,29 +185,14 @@ function unsubscribeAll() {
  * Logout method
  */
 function logout() {
-  return get(`/api/auth/logout`)
-    .then((response) => {
-      // remove user from local storage to log user out
-      localStorage.removeItem("currentUser");
+  localStorage.removeItem("currentUser");
 
-      Cookie.remove("_token", { path: "/" });
+  Cookie.remove("_token", { path: "/" });
 
-      currentUserSubject.next({});
+  currentUserSubject.next({});
 
-      history.push("/auth/login");
-      // window.location.reload()
-      return response;
-    })
-    .catch((error) => {
-      // remove user from local storage to log user out
-      localStorage.removeItem("currentUser");
-
-      Cookie.remove("_token", { path: "/" });
-
-      currentUserSubject.next({});
-
-      history.push("/auth/login");
-    });
+  history.push("/auth/login");
+  // window.location.reload()
 }
 
 /*
@@ -223,7 +207,7 @@ function localLogout() {
   currentUserSubject.next({});
 
   history.push("/auth/login");
-  window.location.reload();
+  // window.location.reload();
 }
 
 /*
@@ -337,4 +321,8 @@ function redirectToSavedPage() {
     history.push("/saved");
     window.location.reload();
   }
+}
+function redirectToProfilePage(payload: { id: string }): void {
+  history.push(`/profile/${payload.id}`);
+  window.location.reload();
 }

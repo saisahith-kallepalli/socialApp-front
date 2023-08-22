@@ -38,6 +38,7 @@ import { FormControl, Modal } from "react-bootstrap";
 import PostPopup from "../Popups/postPopup/postPopup";
 import { useSelector } from "react-redux";
 import Popup from "reactjs-popup";
+import { authenticationService } from "../../utils/auth.service";
 type Props = {
   userName: string;
   profileImage: string;
@@ -50,6 +51,8 @@ type Props = {
   createdAt: any;
   createdById: string;
   isUserActive: boolean;
+  firstName: string;
+  lastName: string;
 };
 
 export const PostContainer = (props: Props) => {
@@ -75,13 +78,12 @@ export const PostContainer = (props: Props) => {
     commentRef.current.focus();
     setReplyFocus(true);
     setCommentId(id);
-    
   };
   const saved = useSelector((state: any) => state.userData.user.saved);
   const isLiked: number = props.postLikes.filter(
-    (each) => each.id=== userId
+    (each) => each.id === userId
   ).length;
-  console.log(props.postLikes,"====>",userId,isLiked);
+  console.log(props.postLikes, "====>", userId, isLiked);
   const isSaved: number = saved.filter(
     (each: any) => each.id._id === props.postId
   ).length;
@@ -106,7 +108,7 @@ export const PostContainer = (props: Props) => {
     const value = await commentService.postComment(props.postId, {
       comment: postComment.comment,
     });
-    setPopup((prev) => !prev)
+    setPopup((prev) => !prev);
     setReplyFocus(false);
     setShowComments(true);
     setPostComment({ comment: "" });
@@ -132,10 +134,8 @@ export const PostContainer = (props: Props) => {
     }
   };
   const onClickHandleSave = async () => {
-   
-      await postService.savePost(props.postId);
-      props.setRenderLikes();
-    
+    await postService.savePost(props.postId);
+    props.setRenderLikes();
   };
   const nextImage = () => {
     if (props.postImages.length <= indexImage + 1) {
@@ -152,7 +152,9 @@ export const PostContainer = (props: Props) => {
       setIndexImage(indexImage - 1);
     }
   };
-  {console.log(props)}
+  {
+    console.log(props);
+  }
   return (
     <div className="container">
       <Box
@@ -161,29 +163,33 @@ export const PostContainer = (props: Props) => {
           justifyContent: "space-between",
           p: "10px",
           pb: "0px",
-        }}
-      >
-        <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+        }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            cursor: "pointer",
+          }}
+          onClick={() =>
+            authenticationService.redirectToProfilePage({
+              id: props.profileId,
+            })
+          }>
           {props.isUserActive ? (
             <Badge
               overlap="circular"
               anchorOrigin={{ vertical: "top", horizontal: "left" }}
               variant="dot"
-              color="success"
-            >
-              <Avatar
-                alt={props.userName}
-                src={props.profileImage || "https://sajsd.com"}
-              />
+              color="success">
+              <Avatar alt={props.userName} src={props.profileImage} />
             </Badge>
           ) : (
-            <Avatar
-              alt={props.userName}
-              src={props.profileImage || ""}
-            />
+            <Avatar alt={props.userName} src={props.profileImage || ""} />
           )}
-          
-          <label className="userName">{props.userName}</label>
+
+          <label className="userName">
+            {props.userName || props?.firstName + "_" + props?.lastName}
+          </label>
         </Box>
       </Box>
       <div className="container-pop">
@@ -200,8 +206,7 @@ export const PostContainer = (props: Props) => {
                 visibility: indexImage >= 1 ? "visible" : "hidden",
               }}
               className="prev-icon"
-              onClick={prevImage}
-            >
+              onClick={prevImage}>
               <ArrowBackIos />
             </IconButton>
           ) : (
@@ -216,8 +221,7 @@ export const PostContainer = (props: Props) => {
                     : "hidden",
               }}
               className="next-icon"
-              onClick={nextImage}
-            >
+              onClick={nextImage}>
               <ArrowForwardIos />
             </IconButton>
           ) : (
@@ -231,14 +235,12 @@ export const PostContainer = (props: Props) => {
           display: "flex",
           justifyContent: "space-between",
           mt: "20px",
-        }}
-      >
+        }}>
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
-          }}
-        >
+          }}>
           <Box>
             <IconButton aria-label="heart" onClick={onClickHandleLike}>
               <FavoriteRounded
@@ -262,8 +264,7 @@ export const PostContainer = (props: Props) => {
               onClick={() => {
                 setPopup(true);
                 setReplyFocus(false);
-              }}
-            >
+              }}>
               <ChatBubbleOutlineOutlined />
             </IconButton>
           </Box>
@@ -284,15 +285,13 @@ export const PostContainer = (props: Props) => {
         className="viewAll-comments"
         onClick={() => {
           setPopup((prev) => !prev);
-        }}
-      >
+        }}>
         view all comments
       </p>
       <Moment className="moment-edit" fromNow>
         {props.createdAt}
       </Moment>
       <div>
-       
         <TextField
           label={replyFocus ? "reply" : "comment"}
           placeholder={
@@ -333,8 +332,7 @@ export const PostContainer = (props: Props) => {
                     </IconButton>
                   </InputAdornment>
                 )}
-                position="top left"
-              >
+                position="top left">
                 <Box>
                   <Picker
                     disableSearchBar={true}

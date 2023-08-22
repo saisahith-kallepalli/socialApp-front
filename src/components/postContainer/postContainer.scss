@@ -10,11 +10,24 @@
   margin: 0px;
 }
 .imageShow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 608px;
   height: 608px;
   object-fit: fill;
   position: relative;
   padding-top: 13px;
+  .next-icon {
+    // justify-content: flex-end;
+    right: 0;
+    position: absolute;
+  }
+  .prev-icon {
+    // justify-content: flex-start;
+    left: 0;
+    position: absolute;
+  }
 }
 .imageEdit2 {
   width: 608px;
@@ -24,12 +37,7 @@
   margin-top: 0px;
 }
 
-.next-icon {
-  position: absolute;
-}
-.prev-icon {
-  position: absolute;
-}
+
 .likes-text {
   font-family: var(--font-family-system);
   padding-left: 10px;
