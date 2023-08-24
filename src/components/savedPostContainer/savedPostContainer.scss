@@ -29,14 +29,20 @@
 .container-saved {
   width: 304px;
   height: 304px;
-  border-radius: 8px;
   padding: 8px, 0px, 0px, 0px;
 
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   padding-left: 0px;
   padding-right: 0px;
   margin: 16px;
+  border-radius: 10px;
+  img {
+    border-radius: 10px;
+  }
 }
 
-
-
+.container-saved :hover {
+  scale: 1.03;
+  z-index: 1;
+  transition: 1s ease;
+}

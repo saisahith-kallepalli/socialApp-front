@@ -73,6 +73,7 @@ export const SavedPostContainer = (props: Props) => {
     onClickShowComments();
   }, [duplicate, popup]);
   const onClickHandleLike = async () => {
+    console.log("first");
     if (isLiked) {
       await postService.likePost(props.postId);
       props.setRenderLikes();
@@ -82,10 +83,8 @@ export const SavedPostContainer = (props: Props) => {
     }
   };
   const onClickHandleSave = async () => {
- 
-      await postService.savePost(props.postId);
-      props.setRenderLikes();
-    
+    await postService.savePost(props.postId);
+    props.setRenderLikes();
   };
   const nextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -120,8 +119,7 @@ export const SavedPostContainer = (props: Props) => {
                 visibility: indexImage >= 1 ? "visible" : "hidden",
               }}
               className="prev-icon-saved"
-              onClick={prevImage}
-            >
+              onClick={prevImage}>
               <ArrowBackIos />
             </IconButton>
           ) : (
@@ -136,8 +134,7 @@ export const SavedPostContainer = (props: Props) => {
                     : "hidden",
               }}
               className="next-icon-saved"
-              onClick={nextImage}
-            >
+              onClick={nextImage}>
               <ArrowForwardIos />
             </IconButton>
           ) : (

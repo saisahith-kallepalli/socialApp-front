@@ -11,6 +11,7 @@ import { postsData, userDataChange } from "../../redux/reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticationService } from "../../utils/auth.service";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { io } from "socket.io-client";
 
 export default function Home() {
   const authToken = Cookies.get("_token");
@@ -24,7 +25,6 @@ export default function Home() {
   const newPost = useSelector((state: any) => state.postsData.newPost);
   console.log(posting);
   useEffect(() => {
-    console.log("token", authToken);
     if (authToken) {
       fetchPosts();
       fetchUser();
@@ -58,6 +58,7 @@ export default function Home() {
   const setRenderLikes = () => {
     setLike((pre) => !pre);
   };
+ 
   return (
     <Container sx={{ marginTop: "80px" }}>
       <Box sx={{ my: 4 }}>

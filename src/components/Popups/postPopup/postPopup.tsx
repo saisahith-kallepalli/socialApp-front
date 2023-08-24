@@ -84,10 +84,9 @@ const PostPopup = (props: Props) => {
     (each: any) => each.id._id === props.postId
   ).length;
   const onClickHandleSave = async () => {
-  
-      await postService.savePost(props.postId);
-      props.setRenderLikes();
-    
+    console.log("first saved");
+    await postService.savePost(props.postId);
+    props.setRenderLikes();
   };
   const onClickReply = (id: string) => {
     commentRef.current.focus();
@@ -142,8 +141,7 @@ const PostPopup = (props: Props) => {
       show={popup}
       onHide={() => setPopup(false)}
       className="body-dec overflow-hidden "
-      animation={false}
-    >
+      animation={false}>
       <Modal.Body className="d-flex p-0 justify-content-start body-dec bg-white">
         <Box className="p-0 body-dec bg-white">
           <div className="imageShowPopup">
@@ -158,8 +156,7 @@ const PostPopup = (props: Props) => {
                   visibility: indexImagePopup >= 1 ? "visible" : "hidden",
                 }}
                 className="prev-icon"
-                onClick={prevImagePopup}
-              >
+                onClick={prevImagePopup}>
                 <ArrowBackIos />
               </IconButton>
             ) : (
@@ -174,8 +171,7 @@ const PostPopup = (props: Props) => {
                       : "hidden",
                 }}
                 className="next-icon"
-                onClick={nextImagePopup}
-              >
+                onClick={nextImagePopup}>
                 <ArrowForwardIos />
               </IconButton>
             ) : (
@@ -189,30 +185,26 @@ const PostPopup = (props: Props) => {
               // position: "fixed",
               // zIndex: "500",
               backgroundColor: "#ffffff",
-            }}
-          >
+            }}>
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
                 p: "10px",
                 pb: "0px",
-              }}
-            >
+              }}>
               <Box
                 sx={{
                   display: "flex",
                   p: "0px",
-                }}
-              >
+                }}>
                 <Box sx={{ border: "2px solid #ffffff", borderRadius: "50px" }}>
                   {isUserActive ? (
                     <Badge
                       overlap="circular"
                       anchorOrigin={{ vertical: "top", horizontal: "left" }}
                       variant="dot"
-                      color="success"
-                    >
+                      color="success">
                       <Avatar
                         alt={userName}
                         src={profileImage || "https://sajsd.com"}
@@ -234,8 +226,7 @@ const PostPopup = (props: Props) => {
                 justifyContent: "space-between",
                 mt: "20px",
                 width: "100%",
-              }}
-            >
+              }}>
               <Box>
                 <IconButton aria-label="heart" onClick={onClickHandleLike}>
                   <FavoriteRounded
@@ -258,8 +249,7 @@ const PostPopup = (props: Props) => {
                   aria-label="comments"
                   onClick={() => {
                     setReplyFocus(false);
-                  }}
-                >
+                  }}>
                   <ChatBubbleOutlineOutlined />
                 </IconButton>
               </Box>
@@ -285,8 +275,7 @@ const PostPopup = (props: Props) => {
                 height: "30vh",
                 overflowY: "scroll",
                 marginBottom: "30px",
-              }}
-            >
+              }}>
               {showEmojis && (
                 <Box sx={{ zIndex: "500" }}>
                   <Picker
@@ -359,8 +348,7 @@ const PostPopup = (props: Props) => {
                 <InputAdornment
                   ref={target}
                   position="start"
-                  onClick={emojisShow}
-                >
+                  onClick={emojisShow}>
                   <IconButton>
                     <EmojiEmotions />
                   </IconButton>

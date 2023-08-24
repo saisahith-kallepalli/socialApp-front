@@ -3,7 +3,10 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-
+  border-radius: 20px;
+  background-color: #030303e1;
+  color: #ece5e5;
+  margin-top: 20px;
   .profile-header {
     display: flex;
     align-items: center;
@@ -24,18 +27,49 @@
 
     .bio {
       font-size: 0.9rem;
-      color: #666;
+      color: #ccd0d1;
       margin: 5px 0;
     }
   }
+}
+.message-btn {
+  height: 28px;
+  border: 0px solid #000 !important;
+  background-color: #ffffffea !important;
+  color: #1b1a1a !important;
+  margin-left: 20px !important;
+}
+.profile-posts {
+  display: flex;
+  justify-content: space-around;
+  background-color: #e0dbdb90;
+  height: 30px;
+  width: 500px;
+  border-radius: 10px;
+  margin: 20px auto 20px auto;
 
-  .profile-posts {
+  cursor: pointer;
+  .post {
     display: flex;
     justify-content: center;
-
-    .post {
-      display: flex;
-      color: #504c4c;
-    }
+    align-items: center;
+    color: #504c4c;
+    width: 50%;
+    transition: 0.5s ease;
   }
+}
+.post-container {
+  margin: 20px auto 20px auto;
+  width: 80vw;
+  background-color: #504c4c90;
+  backdrop-filter: saturate(180%) blur(10px);
+  border-radius: 20px;
+}
+.profile-select {
+  background-color: #1b1b1990;
+  backdrop-filter: saturate(180%) blur(10px);
+  animation: slideIn 1s;
+  border-radius: 10px;
+  color: #ece5e5 !important;
+  transition: 0.5s ease;
 }

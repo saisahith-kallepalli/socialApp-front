@@ -1,12 +1,13 @@
 import "./App.css";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { AppLoader } from "./components/app-loader";
 import { AppNavigator } from "./components/app-navigator";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
+import "react-toastify/dist/ReactToastify.css";
+import io from "socket.io-client";
 
 function App() {
+ 
   return (
     <Suspense fallback={<AppLoader />}>
       <ToastContainer

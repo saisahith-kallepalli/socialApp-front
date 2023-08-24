@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import SavedPostContainer from "../../components/savedPostContainer/savedPostContainer";
 
 export default function Saved() {
-  const authToken = Cookies.get("_token");
   const dispatch = useDispatch();
   const [like, setLike] = useState<boolean>(false);
 
